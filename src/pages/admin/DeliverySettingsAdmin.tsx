@@ -74,10 +74,21 @@ const DeliverySettingsAdmin = () => {
         if (dbSettings) {
             const newSettings = { ...settings };
             dbSettings.forEach((s: { key: string; value: string }) => {
-                if (s.key.includes('enabled')) {
+                if (s.key === 'shipping_areas') {
+                    try {
+                        const areas = JSON.parse(s.value);
+                        if (Array.isArray(areas)) {
+                            setShippingAreas(areas);
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse shipping_areas:', e);
+                    }
+                } else if (s.key.includes('enabled')) {
                     (newSettings as any)[s.key] = s.value === 'true';
-                } else if (s.key.includes('fee')) {
+                } else if (s.key.includes('fee') || s.key.includes('threshold')) {
                     (newSettings as any)[s.key] = parseInt(s.value) || 0;
+                } else if (s.key === 'delivery_message') {
+                    (newSettings as any)[s.key] = s.value;
                 }
             });
             setSettings(newSettings);
@@ -87,6 +98,7 @@ const DeliverySettingsAdmin = () => {
     // Save mutation
     const saveMutation = useMutation({
         mutationFn: async () => {
+            // Save delivery settings
             const updates = Object.entries(settings).map(([key, value]) => ({
                 key,
                 value: String(value),
@@ -97,6 +109,14 @@ const DeliverySettingsAdmin = () => {
                     .from("settings")
                     .upsert(update, { onConflict: 'key' });
             }
+
+            // Save shipping areas
+            await (supabase as any)
+                .from("settings")
+                .upsert({
+                    key: 'shipping_areas',
+                    value: JSON.stringify(shippingAreas)
+                }, { onConflict: 'key' });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["delivery-settings"] });

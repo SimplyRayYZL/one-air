@@ -109,6 +109,12 @@ const pageConfig: Record<string, { icon: React.ReactNode; color: string; descrip
         description: "خلفية قسم حاسبة التكييف في الصفحة الرئيسية",
         pageName: "حاسبة التكييف"
     },
+    about_us_home: {
+        icon: <Building2 className="h-5 w-5" />,
+        color: "from-blue-700 to-blue-900",
+        description: "خلفية قسم 'من نحن' في الصفحة الرئيسية",
+        pageName: "من نحن"
+    },
 };
 
 const PageBannersAdmin = () => {
@@ -181,7 +187,6 @@ const PageBannersAdmin = () => {
                         title: data.title,
                         subtitle: data.subtitle,
                         image_url: data.image_url,
-                        updated_at: new Date().toISOString(),
                     })
                     .eq("page_name", pageId);
                 error = result.error;

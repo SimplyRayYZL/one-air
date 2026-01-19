@@ -118,7 +118,7 @@ export interface SiteSettings {
 
 export interface HomepageSection {
     id: string;
-    type: 'hero' | 'features' | 'about' | 'how_it_works' | 'promo_1' | 'brands' | 'products' | 'calculator' | 'promo_2' | 'faq' | 'testimonials' | 'cta';
+    type: 'hero' | 'features' | 'how_it_works' | 'promo_1' | 'brands' | 'products' | 'calculator' | 'promo_2' | 'faq' | 'testimonials' | 'cta' | 'about_us_home' | 'about';
     title?: string;
     subtitle?: string;
     order: number;
@@ -222,16 +222,15 @@ const DEFAULT_SETTINGS: SiteSettings = {
     homepage_sections: [
         { id: 'hero', type: 'hero', title: 'الرئيسية', order: 1, isEnabled: true },
         { id: 'features', type: 'features', title: 'مميزاتنا', order: 2, isEnabled: true },
-        { id: 'about', type: 'about', title: 'من نحن', order: 3, isEnabled: true },
-        { id: 'how_it_works', type: 'how_it_works', title: 'كيف نعمل', order: 4, isEnabled: true },
-        { id: 'promo_1', type: 'promo_1', title: 'بانر عريض 1', order: 5, isEnabled: true },
-        { id: 'brands', type: 'brands', title: 'ماركاتنا', order: 6, isEnabled: true },
-        { id: 'products', type: 'products', title: 'منتجاتنا', order: 7, isEnabled: true },
-        { id: 'calculator', type: 'calculator', title: 'حاسبة التكييف', order: 8, isEnabled: true },
-        { id: 'promo_2', type: 'promo_2', title: 'بانر عريض 2', order: 9, isEnabled: true },
-        { id: 'faq', type: 'faq', title: 'الأسئلة الشائعة', order: 10, isEnabled: true },
-        { id: 'testimonials', type: 'testimonials', title: 'آراء العملاء', order: 11, isEnabled: true },
-        { id: 'cta', type: 'cta', title: 'تواصل معنا', order: 12, isEnabled: true },
+        { id: 'how_it_works', type: 'how_it_works', title: 'كيف نعمل', order: 3, isEnabled: true },
+        { id: 'promo_1', type: 'promo_1', title: 'بانر عريض 1', order: 4, isEnabled: true },
+        { id: 'brands', type: 'brands', title: 'ماركاتنا', order: 5, isEnabled: true },
+        { id: 'products', type: 'products', title: 'منتجاتنا', order: 6, isEnabled: true },
+        { id: 'calculator', type: 'calculator', title: 'حاسبة التكييف', order: 7, isEnabled: true },
+        { id: 'promo_2', type: 'promo_2', title: 'بانر عريض 2', order: 8, isEnabled: true },
+        { id: 'faq', type: 'faq', title: 'الأسئلة الشائعة', order: 9, isEnabled: true },
+        { id: 'testimonials', type: 'testimonials', title: 'آراء العملاء', order: 10, isEnabled: true },
+        { id: 'cta', type: 'cta', title: 'تواصل معنا', order: 11, isEnabled: true },
     ],
 
     // Database config

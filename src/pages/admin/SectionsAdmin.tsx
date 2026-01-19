@@ -182,40 +182,23 @@ const SectionsAdmin = () => {
 
                                             {/* Dynamic Content Fields based on Type */}
                                             <div className="rounded-lg border bg-muted/10 p-4">
-                                                <Label className="mb-2 block font-semibold">إعدادات المحتوى</Label>
-
-                                                {editingSection?.type === 'about' ? (
-                                                    <div className="space-y-2">
-                                                        <Label htmlFor="about-content">محتوى "من نحن" (الفقرة الطويلة)</Label>
-                                                        <Textarea
-                                                            id="about-content"
-                                                            value={typeof editingSection.content === 'string' ? editingSection.content : (editingSection.content?.text || '')}
-                                                            onChange={(e) => setEditingSection(prev => prev ? {
-                                                                ...prev,
-                                                                content: e.target.value
-                                                            } : null)}
-                                                            placeholder="اكتب نبذة عن الشركة..."
-                                                            rows={6}
-                                                        />
-                                                    </div>
-                                                ) : (
-                                                    <div className="space-y-2">
-                                                        <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
-                                                        <Textarea
-                                                            className="font-mono text-xs bg-muted/20"
-                                                            value={JSON.stringify(editingSection?.content || {}, null, 2)}
-                                                            onChange={(e) => {
-                                                                try {
-                                                                    const content = JSON.parse(e.target.value);
-                                                                    setEditingSection(prev => prev ? { ...prev, content } : null);
-                                                                } catch (e) {
-                                                                    // Ignore parse error while typing
-                                                                }
-                                                            }}
-                                                            rows={5}
-                                                        />
-                                                    </div>
-                                                )}
+                                                <Label className="mb-2 block font-semibold">إعدادات متقدمة</Label>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
+                                                    <Textarea
+                                                        className="font-mono text-xs bg-muted/20"
+                                                        value={JSON.stringify(editingSection?.content || {}, null, 2)}
+                                                        onChange={(e) => {
+                                                            try {
+                                                                const content = JSON.parse(e.target.value);
+                                                                setEditingSection(prev => prev ? { ...prev, content } : null);
+                                                            } catch (e) {
+                                                                // Ignore parse error while typing
+                                                            }
+                                                        }}
+                                                        rows={5}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 

@@ -11,9 +11,9 @@ import ACCalculatorSection from "@/components/home/ACCalculatorSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import FAQSection from "@/components/home/FAQSection";
 import CTASection from "@/components/home/CTASection";
+import AboutUsHomeSection from "@/components/home/AboutUsHomeSection";
 import PromoBanner from "@/components/home/PromoBanner";
 import PromoSection from "@/components/home/PromoSection";
-import AboutSection from "@/components/home/AboutSection";
 import { useSiteSettings } from "@/hooks/useSettings";
 import { supabase } from "@/integrations/supabase/client";
 import CountUp from "react-countup";
@@ -94,16 +94,16 @@ const Index = () => {
             const sections = settings?.homepage_sections || [
               { id: 'hero', type: 'hero', title: 'الرئيسية', order: 1, isEnabled: true },
               { id: 'features', type: 'features', title: 'مميزاتنا', order: 2, isEnabled: true },
-              { id: 'about', type: 'about', title: 'من نحن', order: 3, isEnabled: true }, // Added About Section
-              { id: 'how_it_works', type: 'how_it_works', title: 'كيف نعمل', order: 4, isEnabled: true },
-              { id: 'promo_1', type: 'promo_1', title: 'بانر عريض 1', order: 5, isEnabled: true },
-              { id: 'brands', type: 'brands', title: 'ماركاتنا', order: 6, isEnabled: true },
-              { id: 'products', type: 'products', title: 'منتجاتنا', order: 7, isEnabled: true },
-              { id: 'calculator', type: 'calculator', title: 'حاسبة التكييف', order: 8, isEnabled: true },
-              { id: 'promo_2', type: 'promo_2', title: 'بانر عريض 2', order: 9, isEnabled: true },
-              { id: 'faq', type: 'faq', title: 'الأسئلة الشائعة', order: 10, isEnabled: true },
-              { id: 'testimonials', type: 'testimonials', title: 'آراء العملاء', order: 11, isEnabled: true },
-              { id: 'cta', type: 'cta', title: 'تواصل معنا', order: 12, isEnabled: true },
+              { id: 'how_it_works', type: 'how_it_works', title: 'كيف نعمل', order: 3, isEnabled: true },
+              { id: 'promo_1', type: 'promo_1', title: 'بانر عريض 1', order: 4, isEnabled: true },
+              { id: 'brands', type: 'brands', title: 'ماركاتنا', order: 5, isEnabled: true },
+              { id: 'products', type: 'products', title: 'منتجاتنا', order: 6, isEnabled: true },
+              { id: 'calculator', type: 'calculator', title: 'حاسبة التكييف', order: 7, isEnabled: true },
+              { id: 'promo_2', type: 'promo_2', title: 'بانر عريض 2', order: 8, isEnabled: true },
+              { id: 'faq', type: 'faq', title: 'الأسئلة الشائعة', order: 9, isEnabled: true },
+              { id: 'testimonials', type: 'testimonials', title: 'آراء العملاء', order: 10, isEnabled: true },
+              { id: 'cta', type: 'cta', title: 'تواصل معنا', order: 11, isEnabled: true },
+              { id: 'about_us_home', type: 'about_us_home', title: 'من نحن', order: 12, isEnabled: true },
             ];
 
             return sections
@@ -115,8 +115,6 @@ const Index = () => {
                     return <HeroBanner key={section.id} {...section} />;
                   case 'features':
                     return <FeaturesSection key={section.id} {...section} />;
-                  case 'about':
-                    return <AboutSection key={section.id} {...section} />;
                   case 'how_it_works':
                     return <HowItWorksSection key={section.id} {...section} />;
                   case 'promo_1':
@@ -135,6 +133,9 @@ const Index = () => {
                     return <TestimonialsSection key={section.id} {...section} />;
                   case 'cta':
                     return <CTASection key={section.id} {...section} />;
+                  case 'about':
+                  case 'about_us_home':
+                    return <AboutUsHomeSection key={section.id} />;
                   default:
                     return null;
                 }
