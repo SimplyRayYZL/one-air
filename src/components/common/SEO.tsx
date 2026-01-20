@@ -23,7 +23,7 @@ const SEO = ({
     author = 'OneAir',
     schema
 }: SEOProps) => {
-    const siteUrl = 'https://oneair-eg.com';
+    const siteUrl = 'https://oneaircool.com';
     const fullUrl = url ? (url.startsWith('http') ? url : `${siteUrl}${url}`) : siteUrl;
     const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
     const siteTitle = 'OneAir - وان اير للتكييف';
