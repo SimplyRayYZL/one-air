@@ -112,6 +112,18 @@ export interface SiteSettings {
     // Homepage Sections
     homepage_sections: HomepageSection[];
 
+    // Promo Sections Content
+    promo_sections: {
+        [key: string]: {
+            title: string;
+            description: string;
+            title_color?: string; // Highlight color
+            text_color?: string;  // Base text color
+            badge_text?: string;
+            title_size?: 'normal' | 'large' | 'xl';
+        };
+    };
+
     // Database
     database_config: DatabaseConfig;
 }
@@ -232,6 +244,12 @@ const DEFAULT_SETTINGS: SiteSettings = {
         { id: 'testimonials', type: 'testimonials', title: 'آراء العملاء', order: 10, isEnabled: true },
         { id: 'cta', type: 'cta', title: 'تواصل معنا', order: 11, isEnabled: true },
     ],
+
+    promo_sections: {
+        group1: { title: "أحدث العروض", description: "اكتشف مجموعتنا الواسعة من العروض الحصرية", title_color: "#152C73", text_color: "#000000", badge_text: "عروض حصرية" },
+        group2: { title: "منتجات مميزة", description: "تشكيلة مختارة من أفضل المنتجات مبيعاً", title_color: "#152C73", text_color: "#000000", badge_text: "الأكثر مبيعاً" },
+        group3: { title: "عروض خاصة", description: "لا تفوت فرصة الحصول على أفضل الأسعار", title_color: "#152C73", text_color: "#000000", badge_text: "خصومات" },
+    },
 
     // Database config
     database_config: {

@@ -565,9 +565,10 @@ const ProductsAdmin = () => {
                               <SelectValue placeholder="اختر النوع" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="split">سبليت</SelectItem>
-                              <SelectItem value="window">شباك</SelectItem>
-                              <SelectItem value="portable">متنقل</SelectItem>
+                              <SelectItem value="wall">حائطي (Split)</SelectItem>
+                              <SelectItem value="freestand">فري ستاند</SelectItem>
+                              <SelectItem value="floor_ceiling">أرضي سقفي</SelectItem>
+                              <SelectItem value="concealed">كونسيلد</SelectItem>
                               <SelectItem value="central">مركزي</SelectItem>
                             </SelectContent>
                           </Select>
@@ -781,11 +782,11 @@ const ProductsAdmin = () => {
           <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-orange-500 rounded-xl">
+                <div className="p-2.5 bg-blue-500 rounded-xl">
                   <Package className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-orange-600">
+                  <p className="text-2xl font-bold text-blue-600">
                     {products?.filter((p) => !p.price || p.price === 0).length || 0}
                   </p>
                   <p className="text-xs text-muted-foreground">بدون سعر</p>
@@ -943,7 +944,7 @@ const ProductsAdmin = () => {
                               {product.price.toLocaleString("ar-EG")} ج.م
                             </span>
                           ) : (
-                            <Badge variant="outline" className="text-orange-500">
+                            <Badge variant="outline" className="text-blue-500">
                               بدون سعر
                             </Badge>
                           )}

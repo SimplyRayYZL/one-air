@@ -310,7 +310,7 @@ const StoreSettingsAdmin = () => {
                     <Card className="border-orange-500/20">
                         <CardHeader className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border-b">
                             <CardTitle className="flex items-center gap-2">
-                                <Clock className="h-5 w-5 text-orange-500" />
+                                <Clock className="h-5 w-5 text-blue-500" />
                                 مواعيد العمل
                             </CardTitle>
                             <CardDescription>أوقات العمل الرسمية</CardDescription>

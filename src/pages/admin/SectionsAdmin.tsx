@@ -140,6 +140,36 @@ const SectionsAdmin = () => {
 
                             {/* Actions */}
                             <div className="flex items-center gap-3 shrink-0">
+                                {/* Delete Dialog */}
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>حذف القسم</DialogTitle>
+                                            <DialogDescription>
+                                                هل أنت متأكد من حذف هذا القسم؟ لا يمكن التراجع عن هذا الإجراء.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="flex justify-end gap-2 mt-4">
+                                            <Button variant="ghost" onClick={() => { }}>إلغاء</Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() => {
+                                                    const newSections = sections.filter(s => s.id !== section.id);
+                                                    setSections(newSections);
+                                                    setIsDirty(true);
+                                                }}
+                                            >
+                                                حذف
+                                            </Button>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+
                                 {/* Edit Content Dialog */}
                                 <Dialog open={editingSection?.id === section.id} onOpenChange={(open) => !open && setEditingSection(null)}>
                                     <DialogTrigger asChild>
@@ -182,23 +212,169 @@ const SectionsAdmin = () => {
 
                                             {/* Dynamic Content Fields based on Type */}
                                             <div className="rounded-lg border bg-muted/10 p-4">
-                                                <Label className="mb-2 block font-semibold">إعدادات متقدمة</Label>
-                                                <div className="space-y-2">
-                                                    <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
-                                                    <Textarea
-                                                        className="font-mono text-xs bg-muted/20"
-                                                        value={JSON.stringify(editingSection?.content || {}, null, 2)}
-                                                        onChange={(e) => {
-                                                            try {
-                                                                const content = JSON.parse(e.target.value);
-                                                                setEditingSection(prev => prev ? { ...prev, content } : null);
-                                                            } catch (e) {
-                                                                // Ignore parse error while typing
-                                                            }
-                                                        }}
-                                                        rows={5}
-                                                    />
-                                                </div>
+                                                <Label className="mb-2 block font-semibold">إعدادات المحتوى</Label>
+
+                                                {editingSection?.type === 'about' ? (
+                                                    <div className="space-y-6">
+                                                        {/* Badge Text */}
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="about-badge">نص الشارة (Badge)</Label>
+                                                            <Input
+                                                                id="about-badge"
+                                                                value={typeof editingSection.content === 'object' ? (editingSection.content?.badge || 'من نحن') : 'من نحن'}
+                                                                onChange={(e) => setEditingSection(prev => prev ? {
+                                                                    ...prev,
+                                                                    content: { ...(typeof prev.content === 'object' ? prev.content : {}), badge: e.target.value }
+                                                                } : null)}
+                                                                placeholder="من نحن"
+                                                            />
+                                                        </div>
+
+                                                        {/* Description */}
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="about-description">وصف الشركة</Label>
+                                                            <Textarea
+                                                                id="about-description"
+                                                                value={typeof editingSection.content === 'object' ? (editingSection.content?.description || '') : ''}
+                                                                onChange={(e) => setEditingSection(prev => prev ? {
+                                                                    ...prev,
+                                                                    content: { ...(typeof prev.content === 'object' ? prev.content : {}), description: e.target.value }
+                                                                } : null)}
+                                                                placeholder="اكتب نبذة عن الشركة..."
+                                                                rows={4}
+                                                            />
+                                                        </div>
+
+                                                        {/* Button Settings */}
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="about-btn-text">نص الزر</Label>
+                                                                <Input
+                                                                    id="about-btn-text"
+                                                                    value={typeof editingSection.content === 'object' ? (editingSection.content?.buttonText || 'اعرف المزيد عنا') : 'اعرف المزيد عنا'}
+                                                                    onChange={(e) => setEditingSection(prev => prev ? {
+                                                                        ...prev,
+                                                                        content: { ...(typeof prev.content === 'object' ? prev.content : {}), buttonText: e.target.value }
+                                                                    } : null)}
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="about-btn-link">رابط الزر</Label>
+                                                                <Input
+                                                                    id="about-btn-link"
+                                                                    value={typeof editingSection.content === 'object' ? (editingSection.content?.buttonLink || '/about') : '/about'}
+                                                                    onChange={(e) => setEditingSection(prev => prev ? {
+                                                                        ...prev,
+                                                                        content: { ...(typeof prev.content === 'object' ? prev.content : {}), buttonLink: e.target.value }
+                                                                    } : null)}
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Stats Cards */}
+                                                        <div className="border-t pt-4">
+                                                            <Label className="text-base font-semibold mb-4 block">بطاقات الإحصائيات</Label>
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                {[0, 1, 2, 3].map((idx) => {
+                                                                    const stats = (typeof editingSection.content === 'object' ? editingSection.content?.stats : null) || [
+                                                                        { value: 5000, prefix: "+", label: "عميل سعيد", iconType: "users" },
+                                                                        { value: 10, prefix: "+", label: "سنوات خبرة", iconType: "clock" },
+                                                                        { value: 15, prefix: "+", label: "علامة تجارية", iconType: "award" },
+                                                                        { value: 100, suffix: "%", label: "ضمان الجودة", iconType: "shield" },
+                                                                    ];
+                                                                    const stat = stats[idx] || {};
+                                                                    return (
+                                                                        <div key={idx} className="bg-muted/30 rounded-lg p-4 space-y-3">
+                                                                            <p className="text-xs text-muted-foreground font-medium">بطاقة {idx + 1}</p>
+                                                                            <div className="grid grid-cols-3 gap-2">
+                                                                                <div>
+                                                                                    <Label className="text-xs">البادئة</Label>
+                                                                                    <Input
+                                                                                        value={stat.prefix || ''}
+                                                                                        onChange={(e) => {
+                                                                                            const newStats = [...stats];
+                                                                                            newStats[idx] = { ...newStats[idx], prefix: e.target.value };
+                                                                                            setEditingSection(prev => prev ? {
+                                                                                                ...prev,
+                                                                                                content: { ...(typeof prev.content === 'object' ? prev.content : {}), stats: newStats }
+                                                                                            } : null);
+                                                                                        }}
+                                                                                        placeholder="+"
+                                                                                        className="text-center"
+                                                                                    />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <Label className="text-xs">الرقم</Label>
+                                                                                    <Input
+                                                                                        type="number"
+                                                                                        value={stat.value || 0}
+                                                                                        onChange={(e) => {
+                                                                                            const newStats = [...stats];
+                                                                                            newStats[idx] = { ...newStats[idx], value: parseInt(e.target.value) || 0 };
+                                                                                            setEditingSection(prev => prev ? {
+                                                                                                ...prev,
+                                                                                                content: { ...(typeof prev.content === 'object' ? prev.content : {}), stats: newStats }
+                                                                                            } : null);
+                                                                                        }}
+                                                                                        className="text-center"
+                                                                                    />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <Label className="text-xs">اللاحقة</Label>
+                                                                                    <Input
+                                                                                        value={stat.suffix || ''}
+                                                                                        onChange={(e) => {
+                                                                                            const newStats = [...stats];
+                                                                                            newStats[idx] = { ...newStats[idx], suffix: e.target.value };
+                                                                                            setEditingSection(prev => prev ? {
+                                                                                                ...prev,
+                                                                                                content: { ...(typeof prev.content === 'object' ? prev.content : {}), stats: newStats }
+                                                                                            } : null);
+                                                                                        }}
+                                                                                        placeholder="%"
+                                                                                        className="text-center"
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label className="text-xs">العنوان</Label>
+                                                                                <Input
+                                                                                    value={stat.label || ''}
+                                                                                    onChange={(e) => {
+                                                                                        const newStats = [...stats];
+                                                                                        newStats[idx] = { ...newStats[idx], label: e.target.value };
+                                                                                        setEditingSection(prev => prev ? {
+                                                                                            ...prev,
+                                                                                            content: { ...(typeof prev.content === 'object' ? prev.content : {}), stats: newStats }
+                                                                                        } : null);
+                                                                                    }}
+                                                                                    placeholder="عميل سعيد"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
+                                                        <Textarea
+                                                            className="font-mono text-xs bg-muted/20"
+                                                            value={JSON.stringify(editingSection?.content || {}, null, 2)}
+                                                            onChange={(e) => {
+                                                                try {
+                                                                    const content = JSON.parse(e.target.value);
+                                                                    setEditingSection(prev => prev ? { ...prev, content } : null);
+                                                                } catch (e) {
+                                                                    // Ignore parse error while typing
+                                                                }
+                                                            }}
+                                                            rows={5}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 

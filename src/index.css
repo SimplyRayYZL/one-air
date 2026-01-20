@@ -18,15 +18,15 @@
     --primary: 225 80% 35%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Vibrant Red (from logo) */
-    --secondary: 5 85% 55%;
+    /* Secondary - Vibrant Blue (Carrier Light Blue) */
+    --secondary: 210 90% 50%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 20% 96%;
     --muted-foreground: 220 15% 45%;
 
-    /* Accent - Bright Red */
-    --accent: 5 90% 50%;
+    /* Accent - Dark Blue */
+    --accent: 225 70% 30%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -40,7 +40,8 @@
 
     /* Custom One Air Colors */
     --oneair-blue: 225 80% 35%;
-    --oneair-red: 5 85% 55%;
+    --oneair-red: 210 90% 50%;
+    /* Replaced with Blue */
     --oneair-light: 220 100% 97%;
     --oneair-navy: 225 80% 25%;
     --oneair-gray: 220 10% 60%;
@@ -49,7 +50,7 @@
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(225 80% 30%) 0%, hsl(225 80% 45%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 20% 98%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(5 85% 55%) 0%, hsl(5 90% 50%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(210 90% 50%) 0%, hsl(225 80% 40%) 100%);
   }
 
   .dark {

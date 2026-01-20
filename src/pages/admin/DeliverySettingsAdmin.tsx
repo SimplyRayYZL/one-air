@@ -274,11 +274,11 @@ const DeliverySettingsAdmin = () => {
                         </Card>
 
                         {/* Pickup */}
-                        <Card className={`transition-all ${settings.pickup_enabled ? 'border-orange-500/50 bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>
+                        <Card className={`transition-all ${settings.pickup_enabled ? 'border-blue-500/50 bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>
                             <CardHeader className="pb-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${settings.pickup_enabled ? 'bg-orange-500' : 'bg-muted'}`}>
+                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${settings.pickup_enabled ? 'bg-blue-500' : 'bg-muted'}`}>
                                             <Package className={`h-6 w-6 ${settings.pickup_enabled ? 'text-white' : 'text-muted-foreground'}`} />
                                         </div>
                                         <div>
@@ -474,7 +474,7 @@ const DeliverySettingsAdmin = () => {
                                     <p className="text-xs text-muted-foreground">رسوم التركيب</p>
                                 </div>
                                 <div className="text-center p-3 bg-muted rounded-lg">
-                                    <p className="text-2xl font-bold text-orange-500">{settings.delivery_fee + settings.installation_fee}</p>
+                                    <p className="text-2xl font-bold text-blue-500">{settings.delivery_fee + settings.installation_fee}</p>
                                     <p className="text-xs text-muted-foreground">الإجمالي</p>
                                 </div>
                                 <div className="text-center p-3 bg-muted rounded-lg">

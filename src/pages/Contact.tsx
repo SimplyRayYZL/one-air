@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/common/SEO";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageBanner from "@/components/common/PageBanner";
@@ -40,10 +40,29 @@ const Contact = () => {
 
   return (
     <>
-      <Helmet>
-        <title>تواصل معنا | وان اير للتكييف</title>
-        <meta name="description" content="تواصل معنا للاستفسار عن منتجاتنا أو للحصول على عرض سعر - وان اير للتكييف" />
-      </Helmet>
+      <SEO
+        title="تواصل معنا | وان اير للتكييف"
+        description="تواصل معنا للاستفسار عن منتجاتنا أو للحصول على عرض سعر. خدمة عملاء متاحة طوال الأسبوع للرد على استفساراتكم."
+        keywords="اتصل بنا, رقم تكييفات, خدمة عملاء تكييف, عنوان وان اير, صيانة تكييفات"
+        url="/contact"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "name": "تواصل معنا - وان اير للتكييف",
+          "description": "صفحة التواصل مع شركة وان اير للتكييف",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "وان اير للتكييف",
+            "telephone": settings?.store_phone || "+201289006310",
+            "email": settings?.store_email || "info@oneair-eg.com",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "القاهرة",
+              "addressCountry": "EG"
+            }
+          }
+        }}
+      />
 
       <div className="min-h-screen flex flex-col">
         <Navbar />

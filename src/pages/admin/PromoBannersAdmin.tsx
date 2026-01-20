@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSiteSettings, useUpdateSettings, DEFAULT_SETTINGS } from "@/hooks/useSettings";
 import { Helmet } from "react-helmet-async";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -65,6 +66,40 @@ const PromoBannersAdmin = () => {
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
+
+    // Site Settings for Section Titles
+    const { data: settings } = useSiteSettings();
+    const updateSettings = useUpdateSettings();
+    const [sectionData, setSectionData] = useState<{ title: string; description: string; title_color?: string; badge_text?: string; title_size?: 'normal' | 'large' | 'xl' }>({
+        title: "",
+        description: "",
+        title_color: "#152C73",
+        badge_text: "",
+        title_size: "normal"
+    });
+
+    // Update local state when settings active group changes
+    useEffect(() => {
+        if (settings?.promo_sections?.[selectedGroup]) {
+            setSectionData(settings.promo_sections[selectedGroup]);
+        } else {
+            setSectionData(DEFAULT_SETTINGS.promo_sections?.[selectedGroup] || { title: "", description: "", title_color: "#152C73", text_color: "#000000", badge_text: "عروض مميزة" });
+        }
+    }, [selectedGroup, settings]);
+
+    const handleSaveSectionInfo = () => {
+        if (!settings) return;
+
+        const newSettings = {
+            ...settings,
+            promo_sections: {
+                ...settings.promo_sections,
+                [selectedGroup]: sectionData
+            }
+        };
+
+        updateSettings.mutate(newSettings);
+    };
 
     // Fetch promo banners for selected group
     const { data: banners, isLoading } = useQuery({
@@ -348,6 +383,102 @@ const PromoBannersAdmin = () => {
                                     </div>
                                 ))}
                             </RadioGroup>
+                        </CardContent>
+                    </Card>
+
+                    {/* Section Info Editor */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-lg">بيانات القسم</CardTitle>
+                            <CardDescription>عنوان وصف القسم الذي يظهر فوق البنرات</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>عنوان القسم</Label>
+                                    <Input
+                                        value={sectionData.title}
+                                        onChange={(e) => setSectionData({ ...sectionData, title: e.target.value })}
+                                        placeholder="مثال: أحدث العروض"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>لون النص الأساسي</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            type="color"
+                                            value={sectionData.text_color || "#000000"}
+                                            onChange={(e) => setSectionData({ ...sectionData, text_color: e.target.value })}
+                                            className="w-12 h-10 p-1 cursor-pointer"
+                                        />
+                                        <Input
+                                            value={sectionData.text_color || "#000000"}
+                                            onChange={(e) => setSectionData({ ...sectionData, text_color: e.target.value })}
+                                            placeholder="#000000"
+                                            dir="ltr"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>لون التميز (للجزء المحدد بـ *)</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            type="color"
+                                            value={sectionData.title_color || "#152C73"}
+                                            onChange={(e) => setSectionData({ ...sectionData, title_color: e.target.value })}
+                                            className="w-12 h-10 p-1 cursor-pointer"
+                                        />
+                                        <Input
+                                            value={sectionData.title_color || "#152C73"}
+                                            onChange={(e) => setSectionData({ ...sectionData, title_color: e.target.value })}
+                                            placeholder="#152C73"
+                                            dir="ltr"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>حجم الخط</Label>
+                                    <select
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        value={sectionData.title_size || "normal"}
+                                        onChange={(e) => setSectionData({ ...sectionData, title_size: e.target.value as any })}
+                                    >
+                                        <option value="normal">عادي (افتراضي)</option>
+                                        <option value="large">كبير</option>
+                                        <option value="xl">ضخم جداً</option>
+                                    </select>
+                                </div>
+                                <div className="col-span-1 md:col-span-2">
+                                    <p className="text-xs text-muted-foreground mb-2">
+                                        💡 <strong>تلميح:</strong> لتلوين جزء محدد من العنوان، ضعه بين علامتي نجمة.
+                                        مثال: <code>أحدث *المنتجات*</code> سيجعل كلمة "المنتجات" فقط باللون المختار.
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>نص الشارة (فوق العنوان)</Label>
+                                    <Input
+                                        value={sectionData.badge_text || ""}
+                                        onChange={(e) => setSectionData({ ...sectionData, badge_text: e.target.value })}
+                                        placeholder="مثال: أفضل العروض"
+                                    />
+                                </div>
+                                <div className="col-span-1 md:col-span-2 space-y-2">
+                                    <Label>وصف القسم</Label>
+                                    <Input
+                                        value={sectionData.description}
+                                        onChange={(e) => setSectionData({ ...sectionData, description: e.target.value })}
+                                        placeholder="مثال: اكتشف تشكيلة واسعة من..."
+                                    />
+                                </div>
+                            </div>
+                            <Button
+                                onClick={handleSaveSectionInfo}
+                                disabled={updateSettings.isPending}
+                                className="w-full md:w-auto"
+                            >
+                                {updateSettings.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                                حفظ بيانات القسم
+                            </Button>
                         </CardContent>
                     </Card>
 

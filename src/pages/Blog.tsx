@@ -111,8 +111,8 @@ const Blog = () => {
                                         key={category}
                                         onClick={() => setSelectedCategory(category)}
                                         className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category
-                                                ? "bg-secondary text-white shadow-lg"
-                                                : "bg-muted text-muted-foreground hover:bg-secondary/10 hover:text-secondary"
+                                            ? "bg-secondary text-white shadow-lg"
+                                            : "bg-muted text-muted-foreground hover:bg-secondary/10 hover:text-secondary"
                                             }`}
                                     >
                                         {category}

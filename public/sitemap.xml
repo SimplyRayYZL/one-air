@@ -1,61 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <!-- الصفحة الرئيسية -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dreamfortrade.com/</loc>
+    <loc>https://oneair-eg.com/</loc>
+    <lastmod>2024-01-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- المنتجات -->
   <url>
-    <loc>https://dreamfortrade.com/products</loc>
+    <loc>https://oneair-eg.com/products</loc>
+    <lastmod>2024-01-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
-  
-  <!-- من نحن -->
   <url>
-    <loc>https://dreamfortrade.com/about</loc>
+    <loc>https://oneair-eg.com/blog</loc>
+    <lastmod>2024-01-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oneair-eg.com/about</loc>
+    <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
-  <!-- اتصل بنا -->
   <url>
-    <loc>https://dreamfortrade.com/contact</loc>
+    <loc>https://oneair-eg.com/contact</loc>
+    <lastmod>2024-01-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
-  <!-- المدونة -->
-  <url>
-    <loc>https://dreamfortrade.com/blog</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- تكييفات هاير -->
-  <url>
-    <loc>https://dreamfortrade.com/products?brand=Haier</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- تكييفات كاريير -->
-  <url>
-    <loc>https://dreamfortrade.com/products?brand=Carrier</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- تكييفات ميديا -->
-  <url>
-    <loc>https://dreamfortrade.com/products?brand=Midea</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
 </urlset>

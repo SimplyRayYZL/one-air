@@ -391,8 +391,8 @@ const SettingsAdmin = () => {
                                     <span className="text-[10px] opacity-70">الصفحات والنصوص</span>
                                 </TabsTrigger>
                                 <TabsTrigger value="analytics" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-orange-500 data-[state=active]:to-orange-600 data-[state=active]:text-white data-[state=active]:border-orange-500">
-                                    <div className="p-3 bg-orange-500/10 rounded-xl">
-                                        <BarChart3 className="h-6 w-6 text-orange-500 data-[state=active]:text-white" />
+                                    <div className="p-3 bg-blue-500/10 rounded-xl">
+                                        <BarChart3 className="h-6 w-6 text-blue-500 data-[state=active]:text-white" />
                                     </div>
                                     <span className="font-semibold">التتبع</span>
                                     <span className="text-[10px] opacity-70">Analytics & Pixels</span>
@@ -668,7 +668,7 @@ const SettingsAdmin = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <Label className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-orange-500" />
+                                        <BarChart3 className="h-4 w-4 text-blue-500" />
                                         Google Analytics 4 (GA4)
                                     </Label>
                                     <Input
@@ -759,7 +759,7 @@ const SettingsAdmin = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="p-4 border rounded-xl bg-gradient-to-br from-orange-500/5 to-orange-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-orange-500" />
+                                        <BarChart3 className="h-4 w-4 text-blue-500" />
                                         Hotjar Site ID
                                     </Label>
                                     <Input

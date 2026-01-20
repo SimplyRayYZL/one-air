@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/common/SEO";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -59,32 +59,13 @@ const Index = () => {
 
   return (
     <>
-      <Helmet>
-        <title>وان اير للتكييف | تكييفات في مصر</title>
-        <meta
-          name="description"
-          content="شركة وان اير للتكييف - تكييفات شارب، كاريير، جنرال، ميديا، تورنيدو في مصر. أفضل الأسعار، ضمان شامل، وتوصيل سريع."
-        />
-        <meta name="keywords" content="تكييفات, شارب, كاريير, جنرال, ميديا, تورنيدو, مصر, وان اير" />
-        <link rel="canonical" href="https://oneair-eg.com" />
-
-        {/* Open Graph */}
-        <meta property="og:title" content="وان اير للتكييف | تكييفات في مصر" />
-        <meta property="og:description" content="أفضل أسعار التكييفات في مصر مع ضمان شامل وتوصيل سريع" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://oneair-eg.com" />
-        <meta property="og:locale" content="ar_EG" />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="وان اير للتكييف | تكييفات بأفضل الأسعار" />
-        <meta name="twitter:description" content="شركة وان اير للتكييف في مصر" />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      </Helmet>
+      <SEO
+        title="وان اير للتكييف | تكييفات شارب، كاريير، ميديا - أفضل الأسعار"
+        description="شركة وان اير للتكييف - وكيل معتمد لتكييفات شارب، كاريير، ميديا، تورنيدو، هاير. أفضل أسعار التكييفات في مصر مع ضمان 5 سنوات وتوصيل وتركيب مجاني."
+        keywords="تكييفات, تكييف شارب, تكييف كاريير, تكييف ميديا, صيانة تكييفات, اسعار التكييفات, وان اير"
+        schema={structuredData}
+        type="website"
+      />
 
       <div className="min-h-screen flex flex-col">
         <Navbar />

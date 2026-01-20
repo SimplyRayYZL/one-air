@@ -8,6 +8,8 @@ export interface PageBanner {
     subtitle: string | null;
     image_url: string | null;
     is_active: boolean;
+    overlay_color: string | null;
+    overlay_opacity: number | null;
 }
 
 // Hook to fetch a specific page banner

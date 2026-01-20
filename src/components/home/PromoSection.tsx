@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { getBannerImage } from "@/lib/imageUtils";
+import { useSiteSettings } from "@/hooks/useSettings";
 
 interface PromoBannerData {
     id: string;
@@ -20,6 +21,10 @@ interface PromoSectionProps {
 }
 
 const PromoSection = ({ group }: PromoSectionProps) => {
+    // Get section content from settings
+    const { data: settings } = useSiteSettings();
+    const sectionData = settings?.promo_sections?.[group];
+
     // Fetch banners for this group
     const { data: banners, isLoading } = useQuery({
         queryKey: ["promo-section", group],
@@ -59,9 +64,60 @@ const PromoSection = ({ group }: PromoSectionProps) => {
     // Check if we're on mobile (simple check)
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
+
+
     return (
         <section className={isFourBanners ? "py-6 md:py-10 bg-gradient-to-b from-muted/20 to-background" : "py-10 md:py-16 bg-gradient-to-b from-muted/20 to-background"}>
             <div className={isFourBanners ? "w-full px-2 md:px-4" : "container mx-auto px-4"}>
+
+                {/* Section Header */}
+                {sectionData && (sectionData.title || sectionData.description) && (
+                    <div className="text-center mb-10 max-w-3xl mx-auto px-4">
+                        {/* Badge */}
+                        {sectionData.badge_text && (
+                            <div data-aos="zoom-in" className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
+                                <Sparkles className="h-4 w-4" />
+                                <span>{sectionData.badge_text}</span>
+                            </div>
+                        )}
+
+                        {/* Title */}
+                        {sectionData.title && (
+                            <h2
+                                className={`font-bold mb-4 ${sectionData.title_size === 'xl' ? 'text-4xl md:text-6xl lg:text-7xl' :
+                                    sectionData.title_size === 'large' ? 'text-4xl md:text-5xl lg:text-6xl' :
+                                        'text-3xl md:text-4xl lg:text-5xl'
+                                    }`}
+                            >
+                                {sectionData.title.includes('*') ? (
+                                    sectionData.title.split('*').map((part, index) => (
+                                        index % 2 === 1 ? (
+                                            <span key={index} style={{ color: sectionData.title_color || "#152C73" }}>
+                                                {part}
+                                            </span>
+                                        ) : (
+                                            <span key={index} style={{ color: sectionData.text_color || "inherit" }}>
+                                                {part}
+                                            </span>
+                                        )
+                                    ))
+                                ) : (
+                                    <span style={{ color: sectionData.title_color || "#152C73" }}>
+                                        {sectionData.title}
+                                    </span>
+                                )}
+                            </h2>
+                        )}
+
+                        {/* Description */}
+                        {sectionData.description && (
+                            <p className="text-muted-foreground text-sm md:text-lg">
+                                {sectionData.description}
+                            </p>
+                        )}
+                    </div>
+                )}
+
                 <div className={`grid ${getGridCols()} ${isFourBanners ? "gap-2 md:gap-3" : "gap-4 md:gap-6 lg:gap-8"}`}>
                     {banners.map((banner, index) => (
                         <Link

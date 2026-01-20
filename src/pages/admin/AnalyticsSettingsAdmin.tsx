@@ -80,7 +80,7 @@ const AnalyticsSettingsAdmin = () => {
                                 </Link>
                                 <div>
                                     <h1 className="text-xl font-bold flex items-center gap-2">
-                                        <BarChart3 className="h-6 w-6 text-orange-500" />
+                                        <BarChart3 className="h-6 w-6 text-blue-500" />
                                         التتبع والتحليلات
                                     </h1>
                                     <p className="text-sm text-muted-foreground">Google & Pixels & Behavior</p>
@@ -108,7 +108,7 @@ const AnalyticsSettingsAdmin = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="p-4 border rounded-xl bg-gradient-to-br from-orange-500/5 to-orange-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-orange-500" />
+                                        <BarChart3 className="h-4 w-4 text-blue-500" />
                                         Google Analytics 4 (GA4)
                                     </Label>
                                     <Input
@@ -212,7 +212,7 @@ const AnalyticsSettingsAdmin = () => {
                     <Card className="border-orange-500/20">
                         <CardHeader className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border-b">
                             <CardTitle className="flex items-center gap-2">
-                                <Eye className="h-5 w-5 text-orange-500" />
+                                <Eye className="h-5 w-5 text-blue-500" />
                                 تحليل السلوك
                             </CardTitle>
                             <CardDescription>Hotjar, Microsoft Clarity</CardDescription>
@@ -221,7 +221,7 @@ const AnalyticsSettingsAdmin = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="p-4 border rounded-xl bg-gradient-to-br from-orange-500/5 to-orange-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
-                                        <BarChart3 className="h-4 w-4 text-orange-500" />
+                                        <BarChart3 className="h-4 w-4 text-blue-500" />
                                         Hotjar Site ID
                                     </Label>
                                     <Input

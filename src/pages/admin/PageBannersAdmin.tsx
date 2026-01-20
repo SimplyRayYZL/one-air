@@ -22,6 +22,8 @@ interface PageBanner {
     subtitle: string | null;
     image_url: string | null;
     is_active: boolean;
+    overlay_color: string | null;
+    overlay_opacity: number | null;
 }
 
 const pageConfig: Record<string, { icon: React.ReactNode; color: string; description: string; pageName: string }> = {
@@ -109,11 +111,11 @@ const pageConfig: Record<string, { icon: React.ReactNode; color: string; descrip
         description: "خلفية قسم حاسبة التكييف في الصفحة الرئيسية",
         pageName: "حاسبة التكييف"
     },
-    about_us_home: {
-        icon: <Building2 className="h-5 w-5" />,
-        color: "from-blue-700 to-blue-900",
-        description: "خلفية قسم 'من نحن' في الصفحة الرئيسية",
-        pageName: "من نحن"
+    home_about_section: {
+        icon: <Info className="h-5 w-5" />,
+        color: "from-blue-800 to-red-600",
+        description: "خلفية قسم من نحن في الصفحة الرئيسية",
+        pageName: "من نحن (الرئيسية)"
     },
 };
 
@@ -124,7 +126,9 @@ const PageBannersAdmin = () => {
         title: string;
         subtitle: string;
         image_url: string;
-    }>({ title: "", subtitle: "", image_url: "" });
+        overlay_color: string;
+        overlay_opacity: number;
+    }>({ title: "", subtitle: "", image_url: "", overlay_color: "", overlay_opacity: 0.5 });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
 
@@ -187,6 +191,9 @@ const PageBannersAdmin = () => {
                         title: data.title,
                         subtitle: data.subtitle,
                         image_url: data.image_url,
+                        overlay_color: data.overlay_color || null,
+                        overlay_opacity: data.overlay_opacity,
+                        updated_at: new Date().toISOString(),
                     })
                     .eq("page_name", pageId);
                 error = result.error;
@@ -200,6 +207,8 @@ const PageBannersAdmin = () => {
                         title: data.title,
                         subtitle: data.subtitle,
                         image_url: data.image_url,
+                        overlay_color: data.overlay_color || null,
+                        overlay_opacity: data.overlay_opacity,
                         is_active: true,
                     });
                 error = result.error;
@@ -228,6 +237,8 @@ const PageBannersAdmin = () => {
             title: banner.title || "",
             subtitle: banner.subtitle || "",
             image_url: banner.image_url || "",
+            overlay_color: banner.overlay_color || "",
+            overlay_opacity: banner.overlay_opacity ?? 0.5,
         });
         setSelectedFile(null);
     };
@@ -258,6 +269,8 @@ const PageBannersAdmin = () => {
                 title: formData.title,
                 subtitle: formData.subtitle,
                 image_url: imageUrl,
+                overlay_color: formData.overlay_color,
+                overlay_opacity: formData.overlay_opacity,
             },
         });
     };
@@ -316,7 +329,9 @@ const PageBannersAdmin = () => {
                                 title: null,
                                 subtitle: null,
                                 image_url: null,
-                                is_active: true
+                                is_active: true,
+                                overlay_color: null,
+                                overlay_opacity: 0.5
                             };
                             const isEditing = editingPage === banner.id;
 
@@ -430,6 +445,44 @@ const PageBannersAdmin = () => {
                                                         </Button>
                                                     )}
                                                 </div>
+
+                                                <div className="grid grid-cols-2 gap-4 pt-2 border-t mt-2">
+                                                    <div className="space-y-1">
+                                                        <Label className="text-xs">لون الشفافية (Overlay)</Label>
+                                                        <div className="flex gap-2">
+                                                            <Input
+                                                                type="color"
+                                                                value={formData.overlay_color || "#000000"}
+                                                                onChange={(e) => setFormData({ ...formData, overlay_color: e.target.value })}
+                                                                className="w-12 h-9 p-1 cursor-pointer"
+                                                            />
+                                                            <Button
+                                                                type="button"
+                                                                variant="outline"
+                                                                size="icon"
+                                                                className="h-9 w-9"
+                                                                onClick={() => setFormData({ ...formData, overlay_color: "" })}
+                                                                title="إلغاء اللون (استخدام التدرج الافتراضي)"
+                                                            >
+                                                                <X className="h-3 w-3" />
+                                                            </Button>
+                                                        </div>
+                                                        <p className="text-[10px] text-muted-foreground">اتركه فارغاً لاستخدام التدرج الافتراضي</p>
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <Label className="text-xs">درجة الشفافية ({Math.round(formData.overlay_opacity * 100)}%)</Label>
+                                                        <Input
+                                                            type="range"
+                                                            min="0"
+                                                            max="1"
+                                                            step="0.1"
+                                                            value={formData.overlay_opacity}
+                                                            onChange={(e) => setFormData({ ...formData, overlay_opacity: parseFloat(e.target.value) })}
+                                                            className="h-9"
+                                                        />
+                                                    </div>
+                                                </div>
+
                                                 <div className="flex gap-2 pt-2">
                                                     <Button
                                                         onClick={() => handleSave(banner.page_name)}
@@ -466,7 +519,7 @@ const PageBannersAdmin = () => {
                         })}
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     );
 };

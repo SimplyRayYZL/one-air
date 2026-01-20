@@ -10,6 +10,8 @@ interface PageBannerProps {
   ctaText?: string;
   ctaLink?: string;
   breadcrumbs?: { label: string; href?: string }[];
+  overlayColor?: string | null;
+  overlayOpacity?: number | null;
 }
 
 const PageBanner = ({
@@ -20,7 +22,24 @@ const PageBanner = ({
   ctaText = "تسوق الآن",
   ctaLink = "/products",
   breadcrumbs,
+  overlayColor,
+  overlayOpacity = 0.5,
 }: PageBannerProps) => {
+  // Determine overlay styles
+  const defaultOverlay = (
+    <>
+      <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
+    </>
+  );
+
+  const customOverlay = overlayColor ? (
+    <div
+      className="absolute inset-0 transition-all duration-300"
+      style={{ backgroundColor: overlayColor, opacity: overlayOpacity ?? 0.5 }}
+    />
+  ) : null;
+
   return (
     <section className="relative min-h-[280px] md:min-h-[350px] overflow-hidden">
       {/* Background with parallax effect */}

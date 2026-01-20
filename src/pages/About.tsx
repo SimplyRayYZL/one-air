@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/common/SEO";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageBanner from "@/components/common/PageBanner";
@@ -25,7 +25,7 @@ const values = [
 const timeline = [
   { year: "2009", title: "البداية", description: "تأسست الشركة برؤية واضحة لتقديم أفضل حلول التكييف" },
   { year: "2014", title: "التوسع", description: "افتتاح فروع جديدة وتوسيع نطاق الخدمات" },
-  { year: "2019", title: "الريادة", description: "أصبحنا الوكيل المعتمد لأكبر الماركات العالمية" },
+  { year: "2019", title: "الريادة", description: "شراكة استراتيجية مع كاريير وميديا لتقديم أفضل تكنولوجيا في مصر" },
   { year: "2024", title: "الابتكار", description: "إطلاق خدمات جديدة وتحديث أنظمة التوصيل والتركيب" },
 ];
 
@@ -34,11 +34,28 @@ const About = () => {
 
   return (
     <>
-      <Helmet>
-        <title>من نحن | وان اير للتكييف - خبرة 15 عاماً في حلول التبريد</title>
-        <meta name="description" content="تعرف على شركة وان اير للتكييف في مصر. خبرة أكثر من 15 عاماً في توريد وتركيب تكييفات كاريير، هاير، وميديا بأفضل جودة وأنسب سعر." />
-        <link rel="canonical" href="https://oneair-eg.com/about" />
-      </Helmet>
+      <SEO
+        title="من نحن | وان اير للتكييف - خبرة 15 عاماً في حلول التبريد"
+        description="تعرف على شركة وان اير للتكييف في مصر. خبرة أكثر من 15 عاماً في توريد وتركيب تكييفات كاريير وميديا بأفضل جودة وأنسب سعر."
+        keywords="من نحن, شركة تكييف, وان اير, وكيل كاريير, وكيل ميديا, تركيب تكييفات"
+        url="/about"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "من نحن - وان اير للتكييف",
+          "description": "نحن شركة رائدة في مجال التكييف والتبريد في مصر لأكثر من 15 عاماً.",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "وان اير للتكييف",
+            "logo": "https://oneair-eg.com/logo.png",
+            "foundingDate": "2009",
+            "url": "https://oneair-eg.com",
+            "sameAs": [
+              "https://www.facebook.com/OneAirconditioner"
+            ]
+          }
+        }}
+      />
 
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -49,6 +66,8 @@ const About = () => {
             subtitle={pageBanner?.subtitle || defaultPageBanners.about.subtitle}
             backgroundImage={pageBanner?.image_url || aboutBanner}
             breadcrumbs={[{ label: "من نحن" }]}
+            overlayColor={pageBanner?.overlay_color}
+            overlayOpacity={pageBanner?.overlay_opacity}
           />
 
           {/* Stats Section - Premium Cards */}

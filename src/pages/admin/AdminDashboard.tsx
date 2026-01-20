@@ -136,7 +136,7 @@ const AdminDashboard = () => {
     // Quick stats cards data
     const statsCards = [
         { icon: Eye, label: "زائر", value: stats?.visitors || 0, color: "text-blue-500", bg: "bg-blue-500/10" },
-        { icon: ShoppingCart, label: "أضاف للسلة", value: stats?.addToCart || 0, color: "text-orange-500", bg: "bg-orange-500/10" },
+        { icon: ShoppingCart, label: "أضاف للسلة", value: stats?.addToCart || 0, color: "text-blue-500", bg: "bg-blue-500/10" },
         { icon: CreditCard, label: "بدأ الدفع", value: stats?.checkout || 0, color: "text-purple-500", bg: "bg-purple-500/10" },
         { icon: TrendingUp, label: "أتم الشراء", value: stats?.purchases || 0, color: "text-green-500", bg: "bg-green-500/10" },
         { icon: BarChart3, label: "الإيرادات (ج.م)", value: (stats?.revenue || 0).toLocaleString(), color: "text-secondary", bg: "bg-secondary/10" },

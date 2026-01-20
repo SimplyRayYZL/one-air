@@ -106,8 +106,8 @@ const FAQSection = () => {
                                         {faq.question}
                                     </span>
                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${openIndex === index
-                                            ? 'bg-primary text-white rotate-180'
-                                            : 'bg-gray-100 text-gray-500'
+                                        ? 'bg-primary text-white rotate-180'
+                                        : 'bg-gray-100 text-gray-500'
                                         }`}>
                                         <ChevronDown className="h-5 w-5" />
                                     </div>
