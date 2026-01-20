@@ -93,7 +93,7 @@ const HowItWorksSection = () => {
                 </div>
 
                 {/* Cards Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                     {steps.map((step, index) => (
                         <div
                             key={index}
