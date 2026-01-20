@@ -52,6 +52,7 @@ const MyOrders = lazy(() => import("./pages/MyOrders"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogArticle = lazy(() => import("./pages/BlogArticle"));
+const Projects = lazy(() => import("./pages/Projects"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -110,6 +111,7 @@ const App = () => (
                           <Route path="/products" element={<Products />} />
                           <Route path="/product/:id" element={<ProductDetails />} />
                           <Route path="/about" element={<About />} />
+                          <Route path="/projects" element={<Projects />} />
                           <Route path="/contact" element={<Contact />} />
                           <Route path="/cart" element={<Cart />} />
                           <Route path="/checkout" element={<Checkout />} />

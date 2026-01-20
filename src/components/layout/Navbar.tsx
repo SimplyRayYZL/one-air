@@ -56,6 +56,7 @@ const Navbar = () => {
     const navLinks = [
         { href: "/", label: "الرئيسية" },
         { href: "/products", label: "منتجاتنا" },
+        { href: "/projects", label: "المشروعات" },
         { href: "/blog", label: "المدونة" },
         { href: "/about", label: "من نحن" },
         { href: "/contact", label: "تواصل معنا" },
