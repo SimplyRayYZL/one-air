@@ -110,9 +110,9 @@ const HowItWorksSection = () => {
                             </div>
 
                             {/* Card */}
-                            <div className={`bg-card rounded-2xl p-6 md:p-8 border-t-4 ${step.borderColor} shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full`}>
+                            <div className={`bg-card rounded-2xl p-6 md:p-8 border-t-4 ${step.borderColor} shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full text-center`}>
                                 {/* Icon */}
-                                <div className={`w-16 h-16 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                                <div className={`w-16 h-16 mx-auto bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
                                     <step.icon className="h-8 w-8 text-white" />
                                 </div>
 
