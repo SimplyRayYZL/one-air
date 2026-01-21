@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, Heart, Search, User, Package, LogOut, ClipboardList } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart, Search, User, Package, LogOut, ClipboardList, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/contexts/CartContext";
@@ -218,6 +218,20 @@ const Navbar = () => {
                                         )}
                                     </Button>
                                 </Link>
+
+                                {/* Admin Dashboard - only if admin is logged in */}
+                                {typeof window !== 'undefined' && sessionStorage.getItem('adminAuth') && (
+                                    <Link to="/admin">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="relative hover:bg-secondary/10 text-secondary"
+                                            title="لوحة التحكم"
+                                        >
+                                            <Settings2 className="h-5 w-5" />
+                                        </Button>
+                                    </Link>
+                                )}
 
                                 {/* User Menu */}
                                 <DropdownMenu>

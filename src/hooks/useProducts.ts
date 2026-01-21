@@ -41,25 +41,7 @@ export const useProducts = () => {
       const { data, error } = await supabase
         .from("products")
         .select(`
-          id,
-          name,
-          price,
-          old_price,
-          rating,
-          image_url,
-          is_active,
-          created_at,
-          capacity,
-          type,
-          horsepower,
-          cooling_type,
-          is_inverter,
-          color,
-          features,
-          brand_id,
-          description,
-          model,
-          stock,
+          *,
           brands (
             id,
             name,
@@ -74,10 +56,10 @@ export const useProducts = () => {
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
-        brand: (item.brands as any)?.name || "غير محدد",
+        brand: item.brands?.name || "غير محدد",
         brand_id: item.brand_id || "",
         price: item.price,
         oldPrice: item.old_price,
@@ -85,16 +67,16 @@ export const useProducts = () => {
         reviews: Math.floor(Math.random() * 100) + 10, // Generate random reviews for now
         capacity: item.capacity,
         type: item.type,
-        horsepower: (item as any).horsepower || null,
-        cooling_type: item.cooling_type,
-        is_inverter: (item as any).is_inverter || false,
-        color: item.color,
+        horsepower: item.horsepower || null,
+        cooling_type: item.cooling_type || null,
+        is_inverter: item.is_inverter || false,
+        color: item.color || null,
         features: item.features || [],
-        model: (item as any).model || null,
+        model: item.model || null,
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active || true,
-        stock: (item as any).stock ?? null, // null means unlimited stock
+        stock: item.stock ?? null, // null means unlimited stock
       }));
     },
   });
@@ -125,23 +107,28 @@ export const useProduct = (id: string) => {
 
       if (!data) return null;
 
+      const item = data as any;
       return {
-        id: data.id,
-        name: data.name,
-        brand: (data.brands as any)?.name || "غير محدد",
-        brand_id: data.brand_id || "",
-        price: data.price,
-        oldPrice: data.old_price,
-        rating: data.rating || 4.5,
+        id: item.id,
+        name: item.name,
+        brand: item.brands?.name || "غير محدد",
+        brand_id: item.brand_id || "",
+        price: item.price,
+        oldPrice: item.old_price,
+        rating: item.rating || 4.5,
         reviews: Math.floor(Math.random() * 100) + 10,
-        capacity: data.capacity,
-        type: data.type,
-        features: data.features || [],
-        model: data.model,
-        description: data.description,
-        image_url: data.image_url,
-        is_active: data.is_active || true,
-        stock: (data as any).stock || 0,
+        capacity: item.capacity,
+        type: item.type,
+        horsepower: item.horsepower || null,
+        cooling_type: item.cooling_type || null,
+        is_inverter: item.is_inverter || false,
+        color: item.color || null,
+        features: item.features || [],
+        model: item.model,
+        description: item.description,
+        image_url: item.image_url,
+        is_active: item.is_active || true,
+        stock: item.stock || 0,
       };
     },
     enabled: !!id,
@@ -201,10 +188,10 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
-        brand: (item.brands as any)?.name || "غير محدد",
+        brand: item.brands?.name || "غير محدد",
         brand_id: item.brand_id || "",
         price: item.price,
         oldPrice: item.old_price,
@@ -212,12 +199,16 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
         reviews: Math.floor(Math.random() * 100) + 10,
         capacity: item.capacity,
         type: item.type,
+        horsepower: item.horsepower || null,
+        cooling_type: item.cooling_type || null,
+        is_inverter: item.is_inverter || false,
+        color: item.color || null,
         features: item.features || [],
         model: item.model,
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active || true,
-        stock: (item as any).stock || 0,
+        stock: item.stock || 0,
       }));
     },
     enabled: !!brandId,
@@ -246,10 +237,10 @@ export const useAllProducts = () => {
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
-        brand: (item.brands as any)?.name || "غير محدد",
+        brand: item.brands?.name || "غير محدد",
         brand_id: item.brand_id || "",
         price: item.price,
         oldPrice: item.old_price,
@@ -257,12 +248,16 @@ export const useAllProducts = () => {
         reviews: Math.floor(Math.random() * 100) + 10,
         capacity: item.capacity,
         type: item.type,
+        horsepower: item.horsepower || null,
+        cooling_type: item.cooling_type || null,
+        is_inverter: item.is_inverter || false,
+        color: item.color || null,
         features: item.features || [],
         model: item.model,
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active ?? true,
-        stock: (item as any).stock || 0,
+        stock: item.stock || 0,
       }));
     },
   });
