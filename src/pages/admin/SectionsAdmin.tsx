@@ -462,6 +462,23 @@ const SectionsAdmin = () => {
                                                         </div>
                                                     </div>
                                                 ) : (
+                                                    <div className="space-y-2">
+                                                        <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
+                                                        <Textarea
+                                                            className="font-mono text-xs bg-muted/20"
+                                                            value={JSON.stringify(editingSection?.content || {}, null, 2)}
+                                                            onChange={(e) => {
+                                                                try {
+                                                                    const content = JSON.parse(e.target.value);
+                                                                    setEditingSection(prev => prev ? { ...prev, content } : null);
+                                                                } catch (e) {
+                                                                    // Ignore parse error while typing
+                                                                }
+                                                            }}
+                                                            rows={5}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 
