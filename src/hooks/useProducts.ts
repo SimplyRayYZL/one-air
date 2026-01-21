@@ -14,6 +14,7 @@ export interface Product {
   type: string | null;
   horsepower: string | null;
   cooling_type: string | null;
+  is_inverter: boolean;
   color: string | null;
   features: string[];
   model: string | null;
@@ -48,15 +49,16 @@ export const useProducts = () => {
           image_url,
           is_active,
           created_at,
-          created_at,
           capacity,
           type,
           horsepower,
           cooling_type,
+          is_inverter,
           color,
           features,
           brand_id,
           description,
+          model,
           stock,
           brands (
             id,
@@ -83,11 +85,12 @@ export const useProducts = () => {
         reviews: Math.floor(Math.random() * 100) + 10, // Generate random reviews for now
         capacity: item.capacity,
         type: item.type,
-        horsepower: item.horsepower,
+        horsepower: (item as any).horsepower || null,
         cooling_type: item.cooling_type,
+        is_inverter: (item as any).is_inverter || false,
         color: item.color,
         features: item.features || [],
-        model: item.model,
+        model: (item as any).model || null,
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active || true,

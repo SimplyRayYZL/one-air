@@ -65,6 +65,8 @@ interface ProductFormData {
   features: string;
   is_active: boolean;
   stock: string;
+  cooling_type: string;
+  is_inverter: boolean;
 }
 
 const initialFormData: ProductFormData = {
@@ -79,6 +81,8 @@ const initialFormData: ProductFormData = {
   features: "",
   is_active: true,
   stock: "10",
+  cooling_type: "",
+  is_inverter: false,
 };
 
 const ProductsAdmin = () => {
@@ -129,6 +133,8 @@ const ProductsAdmin = () => {
       features: product.features?.join("\n") || "",
       is_active: product.is_active,
       stock: product.stock?.toString() || "0",
+      cooling_type: product.cooling_type || "",
+      is_inverter: (product as any).is_inverter || false,
     });
     setPreviewUrl(product.image_url || "");
     setSelectedImage(null);
@@ -194,6 +200,8 @@ const ProductsAdmin = () => {
         features: featuresArray.length > 0 ? featuresArray : null,
         is_active: formData.is_active,
         stock: parseInt(formData.stock) || 0,
+        cooling_type: formData.cooling_type || null,
+        is_inverter: formData.is_inverter,
       };
 
       if (editingProduct) {
@@ -600,6 +608,42 @@ const ProductsAdmin = () => {
                           }
                           placeholder="0"
                         />
+                      </div>
+
+                      {/* Cooling Type & Inverter */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="cooling_type">نوع التبريد</Label>
+                          <Select
+                            value={formData.cooling_type}
+                            onValueChange={(value) =>
+                              setFormData({ ...formData, cooling_type: value })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="اختر نوع التبريد" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="cold">بارد فقط</SelectItem>
+                              <SelectItem value="hot_cold">بارد ساخن</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="is_inverter">تقنية الإنفرتر</Label>
+                          <div className="flex items-center gap-3 h-10 px-3 border rounded-md bg-background">
+                            <Switch
+                              id="is_inverter"
+                              checked={formData.is_inverter}
+                              onCheckedChange={(checked) =>
+                                setFormData({ ...formData, is_inverter: checked })
+                              }
+                            />
+                            <span className="text-sm text-muted-foreground">
+                              {formData.is_inverter ? "إنفرتر" : "عادي"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Description */}
