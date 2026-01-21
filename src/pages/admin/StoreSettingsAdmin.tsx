@@ -297,9 +297,21 @@ const StoreSettingsAdmin = () => {
                                 </Label>
                                 <Textarea
                                     value={formData.store_map_embed}
-                                    onChange={(e) => handleChange("store_map_embed", e.target.value)}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value.includes("<iframe")) {
+                                            const match = value.match(/src="([^"]+)"/);
+                                            if (match && match[1]) {
+                                                handleChange("store_map_embed", match[1]);
+                                                toast.info("تم استخراج الرابط تلقائياً");
+                                                return;
+                                            }
+                                        }
+                                        handleChange("store_map_embed", value);
+                                    }}
                                     placeholder="https://www.google.com/maps/embed?pb=..."
                                     rows={2}
+                                    dir="ltr"
                                 />
                                 <p className="text-xs text-muted-foreground">انسخ رابط التضمين من Google Maps → Share → Embed a map</p>
                             </div>
