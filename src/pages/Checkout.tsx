@@ -195,15 +195,15 @@ const Checkout = () => {
 
             // Clear cart and navigate to success page
 
-            // Send email notifications (Simulation)
-            if (settings) {
+            // Send email notifications
+            if (siteSettings) {
                 await sendOrderEmails({
                     id: order.id,
                     customerName: formData.customerName,
                     customerEmail: formData.email,
                     total: grandTotal,
                     items: items
-                }, settings);
+                }, siteSettings);
             }
 
             clearCart();

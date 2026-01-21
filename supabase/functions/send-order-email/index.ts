@@ -18,7 +18,7 @@ interface OrderEmailRequest {
     settings: any;
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
     }
@@ -39,7 +39,7 @@ serve(async (req) => {
                     Authorization: `Bearer ${RESEND_API_KEY}`,
                 },
                 body: JSON.stringify({
-                    from: "OneAir Notifications <onboarding@resend.dev>", // Using standard dev domain
+                    from: "OneAir Notifications <info@oneaircool.com>", // Using verified domain
                     to: [settings.notification_email],
                     subject: `New Order #${order.id.slice(0, 8)} - ${order.customerName}`,
                     html: `
@@ -73,7 +73,7 @@ serve(async (req) => {
                     Authorization: `Bearer ${RESEND_API_KEY}`,
                 },
                 body: JSON.stringify({
-                    from: "OneAir <onboarding@resend.dev>",
+                    from: "OneAir <info@oneaircool.com>",
                     to: [order.customerEmail],
                     subject: `تأكيد استلام الطلب #${order.id.slice(0, 8)}`,
                     html: `
@@ -97,9 +97,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 200,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error in send-order-email:", error);
-        return new Response(JSON.stringify({ error: error.message }), {
+        return new Response(JSON.stringify({ error: error.message || "Unknown error" }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 400,
         });
