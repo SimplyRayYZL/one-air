@@ -357,24 +357,111 @@ const SectionsAdmin = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                ) : (
-                                                    <div className="space-y-2">
-                                                        <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
-                                                        <Textarea
-                                                            className="font-mono text-xs bg-muted/20"
-                                                            value={JSON.stringify(editingSection?.content || {}, null, 2)}
-                                                            onChange={(e) => {
-                                                                try {
-                                                                    const content = JSON.parse(e.target.value);
-                                                                    setEditingSection(prev => prev ? { ...prev, content } : null);
-                                                                } catch (e) {
-                                                                    // Ignore parse error while typing
-                                                                }
+                                                ) : editingSection?.type === 'features' ? (
+                                                    <div className="space-y-6">
+                                                        <Label className="text-base font-semibold block">قائمة المميزات</Label>
+
+                                                        {/* Features List Editor */}
+                                                        {((editingSection.content as any)?.features || []).map((feature: any, idx: number) => (
+                                                            <div key={idx} className="bg-muted/30 rounded-lg p-4 space-y-3 relative group">
+                                                                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                                        onClick={() => {
+                                                                            const currentFeatures = (editingSection.content as any)?.features || [];
+                                                                            const newFeatures = currentFeatures.filter((_: any, i: number) => i !== idx);
+                                                                            setEditingSection(prev => prev ? {
+                                                                                ...prev,
+                                                                                content: { ...((prev.content as any) || {}), features: newFeatures }
+                                                                            } : null);
+                                                                        }}
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+
+                                                                <p className="text-xs text-muted-foreground font-medium">ميزة {idx + 1}</p>
+
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    <div className="space-y-2">
+                                                                        <Label className="text-xs">العنوان</Label>
+                                                                        <Input
+                                                                            value={feature.title || ''}
+                                                                            onChange={(e) => {
+                                                                                const currentFeatures = (editingSection.content as any)?.features || [];
+                                                                                const newFeatures = [...currentFeatures];
+                                                                                newFeatures[idx] = { ...newFeatures[idx], title: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), features: newFeatures }
+                                                                                } : null);
+                                                                            }}
+                                                                            placeholder="توصيل سريع"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <Label className="text-xs">الأيقونة (English Name)</Label>
+                                                                        <Input
+                                                                            value={feature.icon || ''}
+                                                                            onChange={(e) => {
+                                                                                const currentFeatures = (editingSection.content as any)?.features || [];
+                                                                                const newFeatures = [...currentFeatures];
+                                                                                newFeatures[idx] = { ...newFeatures[idx], icon: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), features: newFeatures }
+                                                                                } : null);
+                                                                            }}
+                                                                            placeholder="Truck, Shield, Star..."
+                                                                        />
+                                                                    </div>
+                                                                    <div className="md:col-span-2 space-y-2">
+                                                                        <Label className="text-xs">الوصف</Label>
+                                                                        <Input
+                                                                            value={feature.description || ''}
+                                                                            onChange={(e) => {
+                                                                                const currentFeatures = (editingSection.content as any)?.features || [];
+                                                                                const newFeatures = [...currentFeatures];
+                                                                                newFeatures[idx] = { ...newFeatures[idx], description: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), features: newFeatures }
+                                                                                } : null);
+                                                                            }}
+                                                                            placeholder="وصف مختصر..."
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="w-full gap-2 border-dashed"
+                                                            onClick={() => {
+                                                                const currentFeatures = (editingSection.content as any)?.features || [];
+                                                                setEditingSection(prev => prev ? {
+                                                                    ...prev,
+                                                                    content: {
+                                                                        ...((prev.content as any) || {}),
+                                                                        features: [...currentFeatures, { icon: 'Star', title: 'ميزة جديدة', description: 'وصف الميزة' }]
+                                                                    }
+                                                                } : null);
                                                             }}
-                                                            rows={5}
-                                                        />
+                                                        >
+                                                            <Plus className="h-4 w-4" />
+                                                            إضافة ميزة جديدة
+                                                        </Button>
+
+                                                        <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg">
+                                                            <span className="font-bold block mb-1">الأيقونات المتاحة:</span>
+                                                            Truck, Shield, Headphones, Wrench, Award, Star, Heart, Zap, Clock, ThumbsUp
+                                                        </div>
                                                     </div>
-                                                )}
+                                                ) : (
                                             </div>
                                         </div>
 
