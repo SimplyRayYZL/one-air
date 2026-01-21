@@ -93,12 +93,21 @@ const Footer = () => {
               <h3 className="text-lg font-bold border-b border-white/20 pb-3">تواصل معنا</h3>
               <ul className="space-y-4">
                 <li>
-                  <a href={`tel:${settings?.store_phone || "01289006310"}`} className="flex items-center gap-3 text-primary-foreground/70 hover:text-secondary transition-colors group">
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-secondary transition-colors">
+                  <div className="flex items-start gap-3 text-primary-foreground/70 group">
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-secondary transition-colors flex-shrink-0 mt-0.5">
                       <Phone className="h-4 w-4" />
                     </div>
-                    <span className="text-sm">{settings?.store_phone || "01289006310"}</span>
-                  </a>
+                    <div className="flex flex-col gap-1.5 pt-1.5">
+                      <a href={`tel:${settings?.store_phone || "01289006310"}`} className="text-sm hover:text-secondary transition-colors ltr:text-left rtl:text-right" dir="ltr">
+                        {settings?.store_phone || "01289006310"}
+                      </a>
+                      {settings?.store_phone_alt && (
+                        <a href={`tel:${settings?.store_phone_alt}`} className="text-sm hover:text-secondary transition-colors ltr:text-left rtl:text-right" dir="ltr">
+                          {settings?.store_phone_alt}
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </li>
                 <li>
                   <a href={`mailto:${settings?.store_email || "info@oneair-eg.com"}`} className="flex items-center gap-3 text-primary-foreground/70 hover:text-secondary transition-colors group">
