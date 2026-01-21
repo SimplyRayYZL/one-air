@@ -603,83 +603,71 @@ const ProductsAdmin = () => {
                           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
                           <h3 className="font-semibold text-sm">المواصفات الفنية</h3>
                         </div>
-                        <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-4 space-y-4">
-                          {/* Capacity Input */}
-                          <div className="flex items-center gap-4">
-                            <Label className="min-w-[80px] text-sm">السعة:</Label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-blue-50 dark:bg-blue-950/20 rounded-xl p-4">
+                          {/* Capacity */}
+                          <div className="space-y-2">
+                            <Label htmlFor="capacity">السعة (حصان)</Label>
                             <Input
+                              id="capacity"
                               value={formData.capacity}
                               onChange={(e) =>
                                 setFormData({ ...formData, capacity: e.target.value })
                               }
-                              placeholder="مثال: 1.5 حصان"
-                              className="flex-1"
+                              placeholder="1.5"
                             />
                           </div>
 
-                          {/* Type - Button Group */}
-                          <div className="flex items-center gap-4">
-                            <Label className="min-w-[80px] text-sm">النوع:</Label>
-                            <div className="flex flex-wrap gap-2 flex-1">
-                              {[
-                                { value: "wall", label: "حائطي" },
-                                { value: "freestand", label: "فري ستاند" },
-                                { value: "floor_ceiling", label: "أرضي سقفي" },
-                                { value: "concealed", label: "كونسيلد" },
-                                { value: "central", label: "مركزي" },
-                              ].map((item) => (
-                                <button
-                                  key={item.value}
-                                  type="button"
-                                  onClick={() => setFormData({ ...formData, type: item.value })}
-                                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${formData.type === item.value
-                                      ? "bg-blue-600 text-white shadow-md"
-                                      : "bg-white dark:bg-gray-800 border hover:bg-blue-50 dark:hover:bg-blue-900/30"
-                                    }`}
-                                >
-                                  {item.label}
-                                </button>
-                              ))}
-                            </div>
+                          {/* Type Dropdown */}
+                          <div className="space-y-2">
+                            <Label htmlFor="type">النوع</Label>
+                            <Select
+                              value={formData.type}
+                              onValueChange={(value) =>
+                                setFormData({ ...formData, type: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="اختر النوع" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="wall">حائطي (Split)</SelectItem>
+                                <SelectItem value="freestand">فري ستاند</SelectItem>
+                                <SelectItem value="floor_ceiling">أرضي سقفي</SelectItem>
+                                <SelectItem value="concealed">كونسيلد</SelectItem>
+                                <SelectItem value="central">مركزي</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
 
-                          {/* Cooling Type - Button Group */}
-                          <div className="flex items-center gap-4">
-                            <Label className="min-w-[80px] text-sm">التبريد:</Label>
-                            <div className="flex gap-2">
-                              <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, cooling_type: "cold" })}
-                                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${formData.cooling_type === "cold"
-                                    ? "bg-cyan-600 text-white shadow-md"
-                                    : "bg-white dark:bg-gray-800 border hover:bg-cyan-50 dark:hover:bg-cyan-900/30"
-                                  }`}
-                              >
-                                ❄️ بارد فقط
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, cooling_type: "hot_cold" })}
-                                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${formData.cooling_type === "hot_cold"
-                                    ? "bg-orange-500 text-white shadow-md"
-                                    : "bg-white dark:bg-gray-800 border hover:bg-orange-50 dark:hover:bg-orange-900/30"
-                                  }`}
-                              >
-                                🔥❄️ بارد ساخن
-                              </button>
-                            </div>
+                          {/* Cooling Type Dropdown */}
+                          <div className="space-y-2">
+                            <Label htmlFor="cooling_type">نوع التبريد</Label>
+                            <Select
+                              value={formData.cooling_type}
+                              onValueChange={(value) =>
+                                setFormData({ ...formData, cooling_type: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="اختر التبريد" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="cold">❄️ بارد فقط</SelectItem>
+                                <SelectItem value="hot_cold">🔥 بارد ساخن</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
 
-                          {/* Inverter - Button Group */}
-                          <div className="flex items-center gap-4">
-                            <Label className="min-w-[80px] text-sm">التقنية:</Label>
-                            <div className="flex gap-2">
+                          {/* Inverter Toggle - Segmented Control */}
+                          <div className="space-y-2">
+                            <Label>تقنية التشغيل</Label>
+                            <div className="flex rounded-lg border overflow-hidden bg-muted/50 h-10">
                               <button
                                 type="button"
                                 onClick={() => setFormData({ ...formData, is_inverter: false })}
-                                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${!formData.is_inverter
-                                    ? "bg-gray-600 text-white shadow-md"
-                                    : "bg-white dark:bg-gray-800 border hover:bg-gray-50 dark:hover:bg-gray-700"
+                                className={`flex-1 text-sm font-medium transition-all ${!formData.is_inverter
+                                    ? "bg-primary text-white"
+                                    : "hover:bg-muted"
                                   }`}
                               >
                                 عادي
@@ -687,9 +675,9 @@ const ProductsAdmin = () => {
                               <button
                                 type="button"
                                 onClick={() => setFormData({ ...formData, is_inverter: true })}
-                                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${formData.is_inverter
-                                    ? "bg-green-600 text-white shadow-md"
-                                    : "bg-white dark:bg-gray-800 border hover:bg-green-50 dark:hover:bg-green-900/30"
+                                className={`flex-1 text-sm font-medium transition-all ${formData.is_inverter
+                                    ? "bg-green-600 text-white"
+                                    : "hover:bg-muted"
                                   }`}
                               >
                                 ⚡ إنفرتر
