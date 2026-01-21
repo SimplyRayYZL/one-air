@@ -21,7 +21,7 @@ const AdminLogin = () => {
         e.preventDefault();
         setIsLoading(true);
 
-        const success = login(username, password);
+        const success = await login(username, password);
 
         if (success) {
             toast.success("تم تسجيل الدخول بنجاح!");

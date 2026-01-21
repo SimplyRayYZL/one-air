@@ -20,6 +20,7 @@ import {
     ArrowUpRight,
     Sparkles,
     Calendar,
+    User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,7 @@ import {
 } from "@/components/ui/select";
 
 const AdminDashboard = () => {
-    const { logout, username, role, canAccessSettings } = useAdminAuth();
+    const { logout, username, role, canAccess, isSuperAdmin } = useAdminAuth();
     const navigate = useNavigate();
     const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('today');
     const { data: stats, isLoading: statsLoading } = useAnalyticsWithPeriod(selectedPeriod);
@@ -65,7 +66,7 @@ const AdminDashboard = () => {
             icon: Package,
             href: "/admin/products",
             color: "from-blue-500 to-blue-600",
-            allowed: true,
+            allowed: canAccess('products'),
         },
         {
             title: "إدارة الطلبات",
@@ -73,7 +74,7 @@ const AdminDashboard = () => {
             icon: ShoppingCart,
             href: "/admin/orders",
             color: "from-green-500 to-emerald-600",
-            allowed: true,
+            allowed: canAccess('orders'),
             badge: "جديد",
         },
         {
@@ -82,7 +83,7 @@ const AdminDashboard = () => {
             icon: Tags,
             href: "/admin/brands",
             color: "from-purple-500 to-violet-600",
-            allowed: true,
+            allowed: canAccess('brands'),
         },
         {
             title: "البانرات",
@@ -90,7 +91,7 @@ const AdminDashboard = () => {
             icon: ImageIcon,
             href: "/admin/banners",
             color: "from-pink-500 to-rose-600",
-            allowed: true,
+            allowed: canAccess('banners'),
         },
         {
             title: "إعدادات التوصيل",
@@ -98,7 +99,7 @@ const AdminDashboard = () => {
             icon: Truck,
             href: "/admin/delivery",
             color: "from-amber-500 to-orange-600",
-            allowed: canAccessSettings(),
+            allowed: canAccess('delivery'),
         },
         {
             title: "إعدادات الموقع",
@@ -106,7 +107,7 @@ const AdminDashboard = () => {
             icon: Settings,
             href: "/admin/settings",
             color: "from-gray-500 to-gray-600",
-            allowed: canAccessSettings(),
+            allowed: canAccess('settings'),
         },
         {
             title: "تنسيق الرئيسية",
@@ -114,8 +115,16 @@ const AdminDashboard = () => {
             icon: Sparkles,
             href: "/admin/sections",
             color: "from-indigo-500 to-purple-600",
-            allowed: canAccessSettings(),
+            allowed: canAccess('sections'),
             badge: "جديد",
+        },
+        {
+            title: "إدارة المشرفين",
+            description: "إضافة وحذف وتعديل صلاحياتهم",
+            icon: User,
+            href: "/admin/manage-admins",
+            color: "from-red-500 to-rose-600",
+            allowed: isSuperAdmin(),
         },
     ].filter(page => page.allowed);
 
@@ -126,9 +135,9 @@ const AdminDashboard = () => {
     };
 
     const getRoleBadge = () => {
-        if (role === 'admin') return { text: 'مدير كامل', variant: 'default' as const, color: 'bg-green-500' };
-        if (role === 'editor') return { text: 'محرر', variant: 'secondary' as const, color: 'bg-blue-500' };
-        return { text: 'عارض', variant: 'outline' as const, color: 'bg-gray-500' };
+        if (role === 'super_admin') return { text: 'مدير عام', variant: 'default' as const, color: 'bg-purple-600' };
+        if (role === 'admin') return { text: 'مشرف', variant: 'secondary' as const, color: 'bg-blue-500' };
+        return { text: 'زائر', variant: 'outline' as const, color: 'bg-gray-500' };
     };
 
     const roleBadge = getRoleBadge();
