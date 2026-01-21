@@ -29,7 +29,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, Shield, Lock, User, Loader2, Link as LinkIcon, Key } from "lucide-react";
+import { Plus, Trash2, Shield, Lock, User, Loader2, Link as LinkIcon, Key, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Permissions mapping
@@ -59,6 +59,7 @@ const ManageAdmins = () => {
     const [loading, setLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -115,42 +116,65 @@ const ManageAdmins = () => {
 
         try {
             // Basic validation
-            if (!formData.username || !formData.password) {
+            if (!formData.username || (!formData.password && !editingUser)) {
                 toast.error("يرجى ملء جميع الحقول المطلوبة");
                 return;
             }
 
-            // Check if username exists
-            const { data: existing } = await supabase
-                .from("admin_users" as any)
-                .select("id")
-                .eq("username", formData.username)
-                .single();
+            // Check if username exists (if creating or changing username)
+            if (!editingUser || editingUser.username !== formData.username) {
+                const { data: existing } = await supabase
+                    .from("admin_users" as any)
+                    .select("id")
+                    .eq("username", formData.username)
+                    .single();
 
-            if (existing) {
-                toast.error("اسم المستخدم موجود بالفعل");
-                return;
+                if (existing) {
+                    toast.error("اسم المستخدم موجود بالفعل");
+                    return;
+                }
             }
 
-            // Insert new user
-            const { error } = await supabase
-                .from("admin_users" as any)
-                .insert([{
+            if (editingUser) {
+                // Update existing user
+                const updateData: any = {
                     username: formData.username,
-                    password: formData.password, // Ideally hash this!
                     role: formData.role,
                     permissions: formData.permissions,
-                }]);
+                };
+                if (formData.password) {
+                    updateData.password = formData.password;
+                }
 
-            if (error) throw error;
+                const { error } = await supabase
+                    .from("admin_users" as any)
+                    .update(updateData)
+                    .eq("id", editingUser.id);
 
-            toast.success("تم إضافة المشرف بنجاح");
+                if (error) throw error;
+                toast.success("تم تعديل بيانات المشرف بنجاح");
+            } else {
+                // Insert new user
+                const { error } = await supabase
+                    .from("admin_users" as any)
+                    .insert([{
+                        username: formData.username,
+                        password: formData.password, // Ideally hash this!
+                        role: formData.role,
+                        permissions: formData.permissions,
+                    }]);
+
+                if (error) throw error;
+                toast.success("تم إضافة المشرف بنجاح");
+            }
+
             setIsOpen(false);
+            setEditingUser(null);
             setFormData({ username: "", password: "", role: "admin", permissions: [] });
             fetchUsers();
         } catch (error) {
-            console.error("Error creating user:", error);
-            toast.error("حدث خطأ أثناء إضافة المشرف");
+            console.error("Error creating/updating user:", error);
+            toast.error("حدث خطأ أثناء حفظ البيانات");
         } finally {
             setSubmitting(false);
         }
@@ -223,7 +247,7 @@ const ManageAdmins = () => {
                             </DialogTrigger>
                             <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
                                 <DialogHeader>
-                                    <DialogTitle>إضافة مشرف جديد</DialogTitle>
+                                    <DialogTitle>{editingUser ? 'تعديل بيانات المشرف' : 'إضافة مشرف جديد'}</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleCreateUser} className="space-y-4 mt-4">
                                     <div className="space-y-2">
@@ -294,8 +318,12 @@ const ManageAdmins = () => {
 
                                     <Button type="submit" className="w-full mt-4" disabled={submitting}>
                                         {submitting ? <Loader2 className="h-4 w-4 animate-spin ml-2" /> : <Plus className="h-4 w-4 ml-2" />}
-                                        حفظ المشرف
                                     </Button>
+                                    {editingUser && (
+                                        <p className="text-xs text-muted-foreground text-center mt-2">
+                                            اترك كلمة المرور فارغة إذا كنت لا تريد تغييرها
+                                        </p>
+                                    )}
                                 </form>
                             </DialogContent>
                         </Dialog>
@@ -359,14 +387,33 @@ const ManageAdmins = () => {
                                     </TableCell>
                                     <TableCell>
                                         {user.username !== 'oneair' && ( // Prevent deleting the main admin
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                                onClick={() => handleDeleteUser(user.id, user.username)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                            <div className="flex gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                                                    onClick={() => {
+                                                        setEditingUser(user);
+                                                        setFormData({
+                                                            username: user.username,
+                                                            password: "",
+                                                            role: user.role,
+                                                            permissions: user.permissions || []
+                                                        });
+                                                        setIsOpen(true);
+                                                    }}
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                    onClick={() => handleDeleteUser(user.id, user.username)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         )}
                                     </TableCell>
                                 </TableRow>

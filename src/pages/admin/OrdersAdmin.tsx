@@ -217,10 +217,7 @@ const OrdersAdmin = () => {
 
     // Delete order completely - restores stock and removes from database
     const deleteOrder = async (orderId: string) => {
-        if (!confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟ سيتم إعادة المخزون للمنتجات.")) {
-            return;
-        }
-
+        // Confirm removed as requested
         setUpdatingStatus(orderId);
         try {
             const order = orders?.find(o => o.id === orderId);
@@ -271,9 +268,7 @@ const OrdersAdmin = () => {
             toast.error("اختر طلب واحد على الأقل");
             return;
         }
-        if (!confirm(`هل أنت متأكد من حذف ${selectedOrders.length} طلب نهائياً؟`)) {
-            return;
-        }
+        // Confirm removed as requested
 
         for (const orderId of selectedOrders) {
             await deleteOrder(orderId);
@@ -287,9 +282,7 @@ const OrdersAdmin = () => {
             toast.error("اختر طلب واحد على الأقل");
             return;
         }
-        if (!confirm(`هل أنت متأكد من إلغاء ${selectedOrders.length} طلب؟`)) {
-            return;
-        }
+        // Confirm removed as requested
 
         for (const orderId of selectedOrders) {
             await updateOrderStatus(orderId, "cancelled");
@@ -554,43 +547,45 @@ const OrdersAdmin = () => {
                                                 {new Date(order.created_at).toLocaleDateString("ar-EG")}
                                             </TableCell>
                                             <TableCell>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => {
-                                                        setEditingOrder(order);
-                                                        setEditForm({
-                                                            customer_name: order.customer_name,
-                                                            phone: order.phone,
-                                                            shipping_address: order.shipping_address,
-                                                            notes: order.notes || "",
-                                                            status: order.status
-                                                        });
-                                                        setIsEditDialogOpen(true);
-                                                    }}
-                                                >
-                                                    <Pencil className="w-4 h-4 text-blue-500" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => openOrderDetails(order)}
-                                                >
-                                                    <Eye className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => deleteOrder(order.id)}
-                                                    disabled={updatingStatus === order.id}
-                                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                                >
-                                                    {updatingStatus === order.id ? (
-                                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                                    ) : (
-                                                        <Trash2 className="w-4 h-4" />
-                                                    )}
-                                                </Button>
+                                                <div className="flex items-center gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => {
+                                                            setEditingOrder(order);
+                                                            setEditForm({
+                                                                customer_name: order.customer_name,
+                                                                phone: order.phone,
+                                                                shipping_address: order.shipping_address,
+                                                                notes: order.notes || "",
+                                                                status: order.status
+                                                            });
+                                                            setIsEditDialogOpen(true);
+                                                        }}
+                                                    >
+                                                        <Pencil className="w-4 h-4 text-blue-500" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => openOrderDetails(order)}
+                                                    >
+                                                        <Eye className="w-4 h-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => deleteOrder(order.id)}
+                                                        disabled={updatingStatus === order.id}
+                                                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                    >
+                                                        {updatingStatus === order.id ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <Trash2 className="w-4 h-4" />
+                                                        )}
+                                                    </Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))}
