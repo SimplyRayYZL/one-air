@@ -247,6 +247,9 @@ const OrdersAdmin = () => {
             // Delete order items first (foreign key constraint)
             await supabase.from("order_items").delete().eq("order_id", orderId);
 
+            // Delete associated analytics events (to clean up dashboard stats)
+            await supabase.from("analytics_events" as any).delete().eq("order_id", orderId);
+
             // Then delete the order
             const { error } = await supabase.from("orders").delete().eq("id", orderId);
 
