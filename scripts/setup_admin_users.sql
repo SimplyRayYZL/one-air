@@ -14,23 +14,17 @@ ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
 -- Drop existing policies to avoid "policy already exists" errors when re-running
 DROP POLICY IF EXISTS "Admins can read all users" ON public.admin_users;
 DROP POLICY IF EXISTS "Super admins can manage users" ON public.admin_users;
+DROP POLICY IF EXISTS "Enable all access" ON public.admin_users;
 
--- Create policy to allow admins to read their own data (and super admins to read all)
-CREATE POLICY "Admins can read all users" 
-ON public.admin_users 
-FOR SELECT 
-USING (true); -- Simplified for internal tool; restrict if needed
-
--- Create policy to allow super_admin to insert/update/delete
-CREATE POLICY "Super admins can manage users" 
+-- Create a simplified policy to avoid infinite recursion
+-- Since we are using a custom auth table without Supabase Auth sessions, 
+-- we cannot securely check "who" is making the request at the DB level easily to prevent recursion.
+-- We will rely on the frontend application security for now.
+CREATE POLICY "Enable all access" 
 ON public.admin_users 
 FOR ALL 
-USING (
-    EXISTS (
-        SELECT 1 FROM public.admin_users 
-        WHERE username = 'oneair' -- Hardcoded super admin check
-    )
-); 
+USING (true)
+WITH CHECK (true); 
 -- Note: RLS with custom auth is tricky. For this prototype, we'll rely on client-side checks + generic SELECT access.
 -- Since we are querying this table to login, we need public SELECT or at least a service key. 
 -- For client-side query (anon key), we need a policy that allows SELECT.
