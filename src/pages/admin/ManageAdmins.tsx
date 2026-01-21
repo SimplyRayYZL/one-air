@@ -80,16 +80,30 @@ const ManageAdmins = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
+            console.log("Fetching users...");
             const { data, error } = await supabase
                 .from("admin_users" as any)
                 .select("*")
                 .order("created_at", { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error("Supabase Error:", error);
+                throw error;
+            }
+
+            console.log("Users fetched:", data);
             setUsers((data as any) || []);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching users:", error);
-            toast.error("فشل تحميل قائمة المشرفين");
+            const message = error.message || "خطأ غير معروف";
+
+            if (error.code === '42P01') {
+                toast.error("جدول المشرفين غير موجود. يرجى تشغيل كود SQL");
+            } else if (error.code === 'PGRST301') { // Row level security
+                toast.error("ليس لديك صلاحية لعرض البيانات (RLS)");
+            } else {
+                toast.error(`فشل تحميل قائمة المشرفين: ${message}`);
+            }
         } finally {
             setLoading(false);
         }
@@ -314,8 +328,8 @@ const ManageAdmins = () => {
                                     </TableCell>
                                     <TableCell>
                                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.role === 'super_admin'
-                                                ? 'bg-purple-100 text-purple-700'
-                                                : 'bg-blue-100 text-blue-700'
+                                            ? 'bg-purple-100 text-purple-700'
+                                            : 'bg-blue-100 text-blue-700'
                                             }`}>
                                             {user.role === 'super_admin' ? 'مدير عام' : 'مشرف'}
                                         </span>
