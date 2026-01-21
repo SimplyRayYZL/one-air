@@ -46,8 +46,9 @@ import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { sendOrderEmails } from "@/lib/email";
-import { useSiteSettings } from "@/hooks/useSettings"; // Checking if this hook exists or use similar
+import { useSiteSettings } from "@/hooks/useSettings";
 import { Pencil } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface OrderItem {
     id: string;
@@ -92,6 +93,7 @@ const OrdersAdmin = () => {
     });
     const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
     const [lastOrderCount, setLastOrderCount] = useState<number>(0);
+    const [selectedOrders, setSelectedOrders] = useState<string[]>([]); // Multi-select
     const { canAccess, role } = useAdminAuth();
 
     const { data: orders, isLoading, refetch } = useQuery({
@@ -263,6 +265,56 @@ const OrdersAdmin = () => {
         }
     };
 
+    // Bulk delete selected orders
+    const deleteSelectedOrders = async () => {
+        if (selectedOrders.length === 0) {
+            toast.error("اختر طلب واحد على الأقل");
+            return;
+        }
+        if (!confirm(`هل أنت متأكد من حذف ${selectedOrders.length} طلب نهائياً؟`)) {
+            return;
+        }
+
+        for (const orderId of selectedOrders) {
+            await deleteOrder(orderId);
+        }
+        setSelectedOrders([]);
+    };
+
+    // Bulk cancel selected orders
+    const cancelSelectedOrders = async () => {
+        if (selectedOrders.length === 0) {
+            toast.error("اختر طلب واحد على الأقل");
+            return;
+        }
+        if (!confirm(`هل أنت متأكد من إلغاء ${selectedOrders.length} طلب؟`)) {
+            return;
+        }
+
+        for (const orderId of selectedOrders) {
+            await updateOrderStatus(orderId, "cancelled");
+        }
+        setSelectedOrders([]);
+    };
+
+    // Toggle order selection
+    const toggleOrderSelection = (orderId: string) => {
+        setSelectedOrders(prev =>
+            prev.includes(orderId)
+                ? prev.filter(id => id !== orderId)
+                : [...prev, orderId]
+        );
+    };
+
+    // Select/deselect all
+    const toggleSelectAll = () => {
+        if (selectedOrders.length === filteredOrders?.length) {
+            setSelectedOrders([]);
+        } else {
+            setSelectedOrders(filteredOrders?.map(o => o.id) || []);
+        }
+    };
+
     const getStatusBadge = (status: string) => {
         const statusInfo = statusOptions.find((s) => s.value === status);
         return (
@@ -380,17 +432,46 @@ const OrdersAdmin = () => {
 
                 {/* Orders Table */}
                 <Card className="border-0 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-secondary/10 to-secondary/5 border-b">
+                    <CardHeader className="bg-gradient-to-r from-secondary/10 to-secondary/5 border-b flex flex-row items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
                             <ShoppingCart className="h-5 w-5 text-secondary" />
                             قائمة الطلبات
                         </CardTitle>
+                        {selectedOrders.length > 0 && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-muted-foreground ml-2">{selectedOrders.length} محدد</span>
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={deleteSelectedOrders}
+                                    className="gap-1 h-8"
+                                >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                    حذف
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={cancelSelectedOrders}
+                                    className="text-red-500 border-red-200 hover:bg-red-50 h-8 gap-1"
+                                >
+                                    <XCircle className="w-3.5 h-3.5" />
+                                    إلغاء
+                                </Button>
+                            </div>
+                        )}
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-[40px]">
+                                            <Checkbox
+                                                checked={filteredOrders?.length > 0 && selectedOrders.length === filteredOrders?.length}
+                                                onCheckedChange={toggleSelectAll}
+                                            />
+                                        </TableHead>
                                         <TableHead>رقم الطلب</TableHead>
                                         <TableHead>العميل</TableHead>
                                         <TableHead>المنتجات</TableHead>
@@ -403,7 +484,13 @@ const OrdersAdmin = () => {
                                 </TableHeader>
                                 <TableBody>
                                     {filteredOrders?.map((order) => (
-                                        <TableRow key={order.id}>
+                                        <TableRow key={order.id} className={selectedOrders.includes(order.id) ? "bg-muted/50" : ""}>
+                                            <TableCell>
+                                                <Checkbox
+                                                    checked={selectedOrders.includes(order.id)}
+                                                    onCheckedChange={() => toggleOrderSelection(order.id)}
+                                                />
+                                            </TableCell>
                                             <TableCell className="font-mono">
                                                 {order.id.slice(0, 8).toUpperCase()}
                                             </TableCell>
