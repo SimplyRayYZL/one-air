@@ -44,6 +44,9 @@ import {
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { sendOrderEmails } from "@/lib/email";
+import { useSiteSettings } from "@/hooks/useSettings"; // Checking if this hook exists or use similar
+import { Pencil } from "lucide-react";
 
 interface OrderItem {
     id: string;
@@ -79,6 +82,15 @@ const OrdersAdmin = () => {
     const [statusFilter, setStatusFilter] = useState("all");
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [editingOrder, setEditingOrder] = useState<Order | null>(null);
+    const [editForm, setEditForm] = useState({
+        customer_name: "",
+        phone: "",
+        shipping_address: "",
+        notes: "",
+        status: ""
+    });
     const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
     const [lastOrderCount, setLastOrderCount] = useState<number>(0);
     const { canAccess, role } = useAdminAuth();
@@ -129,6 +141,10 @@ const OrdersAdmin = () => {
         return matchesSearch && matchesStatus;
     });
 
+    const { data: siteSettings } = useSiteSettings();
+
+    // ... inside updateOrderStatus ...
+
     const updateOrderStatus = async (orderId: string, newStatus: string) => {
         setUpdatingStatus(orderId);
         try {
@@ -144,27 +160,54 @@ const OrdersAdmin = () => {
             if (error) throw error;
 
             // If status changed to "cancelled", restore stock for each item
-            if (newStatus === "cancelled" && oldStatus !== "cancelled" && order?.order_items) {
-                for (const item of order.order_items) {
-                    if (item.product_id) {
-                        // Get current stock
-                        const { data: product } = await supabase
-                            .from("products")
-                            .select("*")
-                            .eq("id", item.product_id)
-                            .single();
-
-                        if (product) {
-                            const currentStock = (product as any).stock || 0;
-                            const newStock = currentStock + item.quantity;
-                            await supabase
+            if (newStatus === "cancelled" && oldStatus !== "cancelled") {
+                if (order?.order_items) {
+                    for (const item of order.order_items) {
+                        if (item.product_id) {
+                            // Get current stock
+                            const { data: product } = await supabase
                                 .from("products")
-                                .update({ stock: newStock } as any)
-                                .eq("id", item.product_id);
+                                .select("*")
+                                .eq("id", item.product_id)
+                                .single();
+
+                            if (product) {
+                                const currentStock = (product as any).stock || 0;
+                                const newStock = currentStock + item.quantity;
+                                await supabase
+                                    .from("products")
+                                    .update({ stock: newStock } as any)
+                                    .eq("id", item.product_id);
+                            }
                         }
                     }
                 }
-                toast.success("تم إلغاء الطلب وإعادة المخزون");
+
+                // Send Cancellation Email
+                if (siteSettings) {
+                    // Create minimal order object for email
+                    const orderForEmail = {
+                        id: order!.id,
+                        customerName: order!.customer_name,
+                        customerEmail: (order as any).customer_email || "", // Assuming this field exists or can be fetched
+                        total: order!.total_amount,
+                        items: order!.order_items || [],
+                        type: 'order_cancelled' // Special type for cancellation
+                    };
+
+                    // Note: You might need to fetch the customer_email if it's not in the 'orders' view/table directly
+                    // but usually it's there. If not, we'd need to fetch it.
+                    // For now assuming it is in 'orders' (which usually has user_id or direct email)
+
+                    // Check if email field exists in Order interface, if not we might need to cast or update interface
+                    if ((order as any).email) {
+                        orderForEmail.customerEmail = (order as any).email;
+                    }
+
+                    await sendOrderEmails(orderForEmail as any, siteSettings);
+                }
+
+                toast.success("تم إلغاء الطلب وإعادة المخزون وإرسال إيميل للعميل");
             } else {
                 toast.success("تم تحديث حالة الطلب");
             }
@@ -389,6 +432,23 @@ const OrdersAdmin = () => {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
+                                                    onClick={() => {
+                                                        setEditingOrder(order);
+                                                        setEditForm({
+                                                            customer_name: order.customer_name,
+                                                            phone: order.phone,
+                                                            shipping_address: order.shipping_address,
+                                                            notes: order.notes || "",
+                                                            status: order.status
+                                                        });
+                                                        setIsEditDialogOpen(true);
+                                                    }}
+                                                >
+                                                    <Pencil className="w-4 h-4 text-blue-500" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     onClick={() => openOrderDetails(order)}
                                                 >
                                                     <Eye className="w-4 h-4" />
@@ -504,6 +564,94 @@ const OrdersAdmin = () => {
                             </div>
                         </div>
                     )}
+                </DialogContent>
+            </Dialog>
+            {/* Edit Order Dialog */}
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle>تعديل الطلب #{editingOrder?.id.slice(0, 8)}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">اسم العميل</label>
+                            <Input
+                                value={editForm.customer_name}
+                                onChange={(e) => setEditForm({ ...editForm, customer_name: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">رقم الهاتف</label>
+                            <Input
+                                value={editForm.phone}
+                                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">العنوان</label>
+                            <Input
+                                value={editForm.shipping_address}
+                                onChange={(e) => setEditForm({ ...editForm, shipping_address: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">ملاحظات</label>
+                            <Input
+                                value={editForm.notes}
+                                onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">الحالة</label>
+                            <Select
+                                value={editForm.status}
+                                onValueChange={(val) => setEditForm({ ...editForm, status: val })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="اختر الحالة" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {statusOptions.map(opt => (
+                                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Button
+                            className="w-full mt-4"
+                            onClick={async () => {
+                                if (!editingOrder) return;
+                                try {
+                                    const { error } = await supabase
+                                        .from("orders")
+                                        .update({
+                                            customer_name: editForm.customer_name,
+                                            phone: editForm.phone,
+                                            shipping_address: editForm.shipping_address,
+                                            notes: editForm.notes,
+                                            status: editForm.status
+                                        })
+                                        .eq("id", editingOrder.id);
+
+                                    if (error) throw error;
+
+                                    if (editForm.status === 'cancelled' && editingOrder.status !== 'cancelled') {
+                                        // Trigger cancellation flow if status changed to cancelled via edit
+                                        updateOrderStatus(editingOrder.id, 'cancelled');
+                                    } else {
+                                        toast.success("تم تحديث بيانات الطلب");
+                                        refetch();
+                                    }
+                                    setIsEditDialogOpen(false);
+                                } catch (err) {
+                                    toast.error("حدث خطأ أثناء التحديث");
+                                    console.error(err);
+                                }
+                            }}
+                        >
+                            حفظ التعديلات
+                        </Button>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>

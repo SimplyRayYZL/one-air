@@ -35,7 +35,7 @@ export const sendOrderEmails = async (order: OrderDetails, settings: SiteSetting
     try {
         console.log("[Email] Invoking 'send-order-email' Edge Function...");
         const { data, error } = await supabase.functions.invoke('send-order-email', {
-            body: { order, settings }
+            body: { order, settings, type: (order as any).type || 'new_order' }
         });
 
         if (error) {
