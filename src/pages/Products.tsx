@@ -19,15 +19,16 @@ import FilterSidebar from "@/components/products/FilterSidebar";
 
 const horsepowers = ["1.5", "2.25", "3", "4", "5", "6", "7.5"];
 const types = [
-  { value: "split", label: "سبليت (حائطي)" },
+  { value: "wall", label: "سبليت (حائطي)" },
   { value: "freestand", label: "فري ستاند (عمودي)" },
   { value: "concealed", label: "كونسيلد (مخفي)" },
   { value: "floor_ceiling", label: "أرضي سقفي" },
+  { value: "central", label: "مركزي" },
   { value: "cassette", label: "كاسيت" }
 ];
 const coolingTypes = [
-  { value: "cool_only", label: "بارد فقط" },
-  { value: "cool_heat", label: "بارد ساخن" }
+  { value: "cold", label: "بارد فقط" },
+  { value: "hot_cold", label: "بارد ساخن" }
 ];
 const inverterOptions = ["عادي", "انفرتر"];
 
@@ -115,8 +116,8 @@ const Products = () => {
 
       const coolingMatch = selectedCooling === "الكل" ||
         product.cooling_type === selectedCooling ||
-        (selectedCooling === "cool_only" && product.name.includes("بارد")) || // Legacy fallback
-        (selectedCooling === "cool_heat" && product.name.includes("ساخن"));
+        (selectedCooling === "cold" && product.name.includes("بارد")) || // Legacy fallback
+        (selectedCooling === "hot_cold" && product.name.includes("ساخن"));
 
       // Inverter filter logic - check if product name contains "انفرتر" or "Inverter"
       let inverterMatch = true;
