@@ -520,10 +520,23 @@ const SettingsAdmin = () => {
                                     <Label>رابط خريطة Google Maps (Embed URL)</Label>
                                     <Input
                                         value={formData.store_map_embed}
-                                        onChange={(e) => handleChange("store_map_embed", e.target.value)}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            // Extract src if user pastes full iframe code
+                                            if (value.includes("<iframe")) {
+                                                const srcMatch = value.match(/src="([^"]+)"/);
+                                                if (srcMatch && srcMatch[1]) {
+                                                    handleChange("store_map_embed", srcMatch[1]);
+                                                    toast.info("تم استخراج الرابط تلقائياً من كود التضمين");
+                                                    return;
+                                                }
+                                            }
+                                            handleChange("store_map_embed", value);
+                                        }}
                                         placeholder="https://www.google.com/maps/embed?pb=..."
+                                        dir="ltr"
                                     />
-                                    <p className="text-xs text-muted-foreground">انسخ رابط التضمين من Google Maps (Share → Embed a map)</p>
+                                    <p className="text-xs text-muted-foreground">انسخ رابط التضمين من Google Maps (Share → Embed a map). سنقوم باستخراج الرابط تلقائياً.</p>
                                 </div>
                             </div>
 
