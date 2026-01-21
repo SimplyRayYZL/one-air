@@ -511,12 +511,7 @@ const Checkout = () => {
                                                 </div>
                                                 {!isPickup && (
                                                     <div className="flex justify-between">
-                                                        <span className="text-muted-foreground">التوصيل ({formData.city || "اختر المحافظة"}):</span>
-                                                        {formData.city ? (
-                                                            <span>{finalShippingFee.toLocaleString()} ج.م</span>
-                                                        ) : (
-                                                            <span className="text-muted-foreground">--</span>
-                                                        )}
+                                                        <span className="text-muted-foreground">{formData.city ? finalShippingFee.toLocaleString() + " ج.م" : "--"}</span>
                                                     </div>
                                                 )}
                                                 {isPickup && (

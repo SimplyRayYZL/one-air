@@ -107,7 +107,7 @@ const Navbar = () => {
                         <div className="flex items-center justify-between h-16 lg:h-20">
                             {/* Logo */}
                             <Link to="/" className="flex items-center flex-shrink-0">
-                                <img src="/logo.png" alt="وان اير للتكييف" className="h-12 lg:h-14 w-auto" />
+                                <img src={settings?.store_logo || "/logo.png"} alt={settings?.store_name || "وان اير للتكييف"} className="h-12 lg:h-14 w-auto" />
                             </Link>
 
                             {/* Desktop Navigation - Center */}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import SEO from "@/components/common/SEO";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -37,6 +37,7 @@ const fallbackImages = [acProduct1, acProduct2, acProduct3, acProduct4];
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Added navigation
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -98,7 +99,8 @@ const ProductDetails = () => {
       return;
     }
     addToCart(product, quantity);
-    toast.success(`تمت إضافة ${quantity} ${product.name} إلى السلة`);
+    toast.success(`تمت الإضافة للسلة`);
+    navigate('/cart');
   };
 
   const handleWishlist = () => {
