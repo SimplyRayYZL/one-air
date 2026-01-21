@@ -108,6 +108,8 @@ export interface SiteSettings {
     contact_subtitle: string;
     footer_text: string;
     footer_copyright: string;
+    privacy_policy: string;
+    terms_and_conditions: string;
 
     // Homepage Sections
     homepage_sections: HomepageSection[];
@@ -230,6 +232,12 @@ const DEFAULT_SETTINGS: SiteSettings = {
     contact_subtitle: "نحن هنا لمساعدتك! تواصل معنا في أي وقت",
     footer_text: "شركة وان اير للتكييف",
     footer_copyright: "جميع الحقوق محفوظة © وان اير للتكييف",
+    privacy_policy: `سياسة الخصوصية
+نحن نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية.
+نقوم بجمع البيانات اللازمة فقط لإتمام الطلبات وتحسين تجربتك في الموقع.`,
+    terms_and_conditions: `الشروط والأحكام
+باستخدامك لهذا الموقع، فإنك توافق على الالتزام بشروط الاستخدام الخاصة بنا.
+جميع الأسعار والعروض قابلة للتغيير دون إشعار مسبق.`,
 
     homepage_sections: [
         { id: 'hero', type: 'hero', title: 'الرئيسية', order: 1, isEnabled: true },

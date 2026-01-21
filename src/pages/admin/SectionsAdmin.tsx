@@ -128,7 +128,9 @@ const SectionsAdmin = () => {
                             {/* Section Info */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-3 mb-1">
-                                    <span className="font-bold text-lg truncate">{section.title || section.type}</span>
+                                    <span className="font-bold text-lg truncate">
+                                        {section.type === 'features' ? 'مميزاتنا' : (section.title || section.type)}
+                                    </span>
                                     <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full uppercase tracking-wider">
                                         {section.type.replace('_', ' ')}
                                     </span>

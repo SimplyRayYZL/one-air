@@ -846,7 +846,26 @@ const SettingsAdmin = () => {
                                         placeholder="الماركات المتوفرة"
                                     />
                                 </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label>سياسة الخصوصية</Label>
+                                    <Textarea
+                                        value={formData.privacy_policy}
+                                        onChange={(e) => handleChange("privacy_policy", e.target.value)}
+                                        placeholder="نص سياسة الخصوصية..."
+                                        rows={6}
+                                    />
+                                </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label>الشروط والأحكام</Label>
+                                    <Textarea
+                                        value={formData.terms_and_conditions}
+                                        onChange={(e) => handleChange("terms_and_conditions", e.target.value)}
+                                        placeholder="نص الشروط والأحكام..."
+                                        rows={6}
+                                    />
+                                </div>
                             </div>
+
 
                             <h3 className="text-lg font-semibold border-t pt-6">صفحة عن الشركة</h3>
                             <div className="space-y-4">

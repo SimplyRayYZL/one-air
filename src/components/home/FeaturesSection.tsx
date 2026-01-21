@@ -63,19 +63,24 @@ const DEFAULT_FEATURES = [
 
 const FeaturesSection = ({ title, subtitle, content }: FeaturesSectionProps) => {
   const features = content?.features || DEFAULT_FEATURES;
-  const SectionTitle = title || "مميزاتنا";
+
+  // If title is explicitly empty string, don't show title.
+  // Only show if title prop is provided.
 
   return (
     <section className="py-16 bg-white overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{SectionTitle}</h2>
-          {subtitle && (
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              {subtitle}
-            </p>
-          )}
-        </div>
+        {/* Only render header if title or subtitle exists */}
+        {(title || subtitle) && (
+          <div className="text-center mb-12">
+            {title && <h2 className="text-3xl font-bold text-gray-900 mb-4">{title}</h2>}
+            {subtitle && (
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                {subtitle}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {features.map((feature, index) => {
