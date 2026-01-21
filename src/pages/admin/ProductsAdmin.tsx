@@ -88,7 +88,7 @@ const initialFormData: ProductFormData = {
 const ProductsAdmin = () => {
   const { data: products, isLoading, refetch } = useAllProducts();
   const { data: brands } = useBrands();
-  const { canEdit, canDelete, role } = useAdminAuth();
+  const { canAccess, role } = useAdminAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrand, setSelectedBrand] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
@@ -447,7 +447,7 @@ const ProductsAdmin = () => {
                 </Badge>
               )}
               {/* Only show Add Product button for admin */}
-              {canEdit() && (
+              {canAccess('products') && (
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
                     <Button onClick={openAddDialog} className="gap-2">
@@ -666,8 +666,8 @@ const ProductsAdmin = () => {
                                 type="button"
                                 onClick={() => setFormData({ ...formData, is_inverter: false })}
                                 className={`flex-1 text-sm font-medium transition-all ${!formData.is_inverter
-                                    ? "bg-primary text-white"
-                                    : "hover:bg-muted"
+                                  ? "bg-primary text-white"
+                                  : "hover:bg-muted"
                                   }`}
                               >
                                 عادي
@@ -676,8 +676,8 @@ const ProductsAdmin = () => {
                                 type="button"
                                 onClick={() => setFormData({ ...formData, is_inverter: true })}
                                 className={`flex-1 text-sm font-medium transition-all ${formData.is_inverter
-                                    ? "bg-green-600 text-white"
-                                    : "hover:bg-muted"
+                                  ? "bg-green-600 text-white"
+                                  : "hover:bg-muted"
                                   }`}
                               >
                                 ⚡ إنفرتر
