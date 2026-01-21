@@ -41,6 +41,7 @@ import {
     XCircle,
     CheckCircle,
 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
@@ -67,13 +68,11 @@ interface Order {
     created_at: string;
     updated_at: string;
     order_items: OrderItem[];
+    email?: string; // Customer email for notifications
 }
 
 const statusOptions = [
     { value: "pending", label: "مؤكد", color: "bg-green-500" },
-    { value: "processing", label: "مؤكد", color: "bg-green-500" },
-    { value: "shipped", label: "مؤكد", color: "bg-green-500" },
-    { value: "delivered", label: "مؤكد", color: "bg-green-500" },
     { value: "cancelled", label: "ملغي/مسترجع", color: "bg-red-500" },
 ];
 
@@ -184,26 +183,15 @@ const OrdersAdmin = () => {
                 }
 
                 // Send Cancellation Email
-                if (siteSettings) {
-                    // Create minimal order object for email
+                if (siteSettings && order?.email) {
                     const orderForEmail = {
-                        id: order!.id,
-                        customerName: order!.customer_name,
-                        customerEmail: (order as any).customer_email || "", // Assuming this field exists or can be fetched
-                        total: order!.total_amount,
-                        items: order!.order_items || [],
-                        type: 'order_cancelled' // Special type for cancellation
+                        id: order.id,
+                        customerName: order.customer_name,
+                        customerEmail: order.email,
+                        total: order.total_amount,
+                        items: order.order_items || [],
+                        type: 'order_cancelled'
                     };
-
-                    // Note: You might need to fetch the customer_email if it's not in the 'orders' view/table directly
-                    // but usually it's there. If not, we'd need to fetch it.
-                    // For now assuming it is in 'orders' (which usually has user_id or direct email)
-
-                    // Check if email field exists in Order interface, if not we might need to cast or update interface
-                    if ((order as any).email) {
-                        orderForEmail.customerEmail = (order as any).email;
-                    }
-
                     await sendOrderEmails(orderForEmail as any, siteSettings);
                 }
 
@@ -223,6 +211,56 @@ const OrdersAdmin = () => {
     const openOrderDetails = (order: Order) => {
         setSelectedOrder(order);
         setIsDialogOpen(true);
+    };
+
+    // Delete order completely - restores stock and removes from database
+    const deleteOrder = async (orderId: string) => {
+        if (!confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟ سيتم إعادة المخزون للمنتجات.")) {
+            return;
+        }
+
+        setUpdatingStatus(orderId);
+        try {
+            const order = orders?.find(o => o.id === orderId);
+
+            // Restore stock for all items
+            if (order?.order_items) {
+                for (const item of order.order_items) {
+                    if (item.product_id) {
+                        const { data: product } = await supabase
+                            .from("products")
+                            .select("*")
+                            .eq("id", item.product_id)
+                            .single();
+
+                        if (product) {
+                            const currentStock = (product as any).stock || 0;
+                            const newStock = currentStock + item.quantity;
+                            await supabase
+                                .from("products")
+                                .update({ stock: newStock } as any)
+                                .eq("id", item.product_id);
+                        }
+                    }
+                }
+            }
+
+            // Delete order items first (foreign key constraint)
+            await supabase.from("order_items").delete().eq("order_id", orderId);
+
+            // Then delete the order
+            const { error } = await supabase.from("orders").delete().eq("id", orderId);
+
+            if (error) throw error;
+
+            toast.success("تم حذف الطلب نهائياً وإعادة المخزون");
+            refetch();
+        } catch (error) {
+            console.error("Error deleting order:", error);
+            toast.error("فشل في حذف الطلب");
+        } finally {
+            setUpdatingStatus(null);
+        }
     };
 
     const getStatusBadge = (status: string) => {
@@ -453,6 +491,19 @@ const OrdersAdmin = () => {
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => deleteOrder(order.id)}
+                                                    disabled={updatingStatus === order.id}
+                                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                >
+                                                    {updatingStatus === order.id ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <Trash2 className="w-4 h-4" />
+                                                    )}
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -629,7 +680,7 @@ const OrdersAdmin = () => {
                                             phone: editForm.phone,
                                             shipping_address: editForm.shipping_address,
                                             notes: editForm.notes,
-                                            status: editForm.status
+                                            status: editForm.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"
                                         })
                                         .eq("id", editingOrder.id);
 

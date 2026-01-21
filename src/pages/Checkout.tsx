@@ -124,6 +124,7 @@ const Checkout = () => {
                     notes: formData.notes || null,
                     status: "pending",
                     user_id: user?.id || null, // Link order to user
+                    email: formData.email || null, // Customer email for notifications
                 })
                 .select()
                 .single();
