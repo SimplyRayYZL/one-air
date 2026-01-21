@@ -75,7 +75,7 @@ const ManageAdmins = () => {
             return;
         }
         fetchUsers();
-    }, [isSuperAdmin, navigate]);
+    }, []);
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -274,7 +274,7 @@ const ManageAdmins = () => {
                                             <Label className="text-base text-primary">تحديد الصلاحيات</Label>
                                             <div className="grid grid-cols-1 gap-2">
                                                 {PERMISSIONS_LIST.map((perm) => (
-                                                    <div key={perm.key} className="flex items-center space-x-2 space-x-reverse space-y-0 rounded-md border p-3 hover:bg-muted/50 cursor-pointer" onClick={() => togglePermission(perm.key)}>
+                                                    <div key={perm.key} className="flex items-center space-x-2 space-x-reverse space-y-0 rounded-md border p-3 hover:bg-muted/50">
                                                         <Checkbox
                                                             checked={formData.permissions.includes(perm.key)}
                                                             onCheckedChange={() => togglePermission(perm.key)}
