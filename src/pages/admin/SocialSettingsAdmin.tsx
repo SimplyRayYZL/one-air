@@ -47,7 +47,11 @@ const SocialSettingsAdmin = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        updateSettings.mutate(formData as any, {
+        if (!settings) return;
+
+        const newSettings = { ...settings, ...formData };
+
+        updateSettings.mutate(newSettings, {
             onSuccess: () => toast.success("تم حفظ الإعدادات بنجاح"),
             onError: () => toast.error("حدث خطأ أثناء الحفظ"),
         });

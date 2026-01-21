@@ -5,7 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-const testimonials = [
+interface Testimonial {
+    id: number | string;
+    name: string;
+    location: string;
+    rating: number;
+    content: string;
+    image: string;
+    date: string;
+}
+
+interface TestimonialsSectionProps {
+    title?: string;
+    subtitle?: string;
+    content?: {
+        testimonials?: Testimonial[];
+    };
+}
+
+const DEFAULT_TESTIMONIALS = [
     {
         id: 1,
         name: "أحمد محمد",
@@ -44,9 +62,12 @@ const testimonials = [
     }
 ];
 
-const TestimonialsSection = () => {
+const TestimonialsSection = ({ title, subtitle, content }: TestimonialsSectionProps) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
+    const testimonials = content?.testimonials || DEFAULT_TESTIMONIALS;
+    const displayTitle = title || "ماذا يقول عملاؤنا عنا؟";
+    const displaySubtitle = subtitle || "نفخر بثقة الآلاف من العملاء في جميع أنحاء مصر. اقرأ تجاربهم الحقيقية مع خدماتنا.";
 
     return (
         <section ref={ref} className="py-20 bg-gradient-to-b from-white to-blue-50 overflow-hidden relative" id="reviews">
@@ -66,10 +87,10 @@ const TestimonialsSection = () => {
                             <span>رأي عملاؤنا</span>
                         </div>
                         <h2 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                            ماذا يقول عملاؤنا عنا؟
+                            {displayTitle}
                         </h2>
                         <p className="text-gray-600 text-lg">
-                            نفخر بثقة الآلاف من العملاء في جميع أنحاء مصر. اقرأ تجاربهم الحقيقية مع خدماتنا.
+                            {displaySubtitle}
                         </p>
                     </motion.div>
                 </div>

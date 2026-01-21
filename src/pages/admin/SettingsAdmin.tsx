@@ -252,7 +252,9 @@ const SettingsAdmin = () => {
 
     const handleSave = async () => {
         try {
-            await updateSettings.mutateAsync(formData);
+            if (!settings) return;
+            const newSettings = { ...settings, ...formData };
+            await updateSettings.mutateAsync(newSettings);
             toast.success("تم حفظ الإعدادات بنجاح");
         } catch {
             toast.error("حدث خطأ أثناء حفظ الإعدادات");

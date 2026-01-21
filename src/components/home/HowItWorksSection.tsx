@@ -1,9 +1,27 @@
 import { Search, ShoppingCart, Truck, CheckCircle } from "lucide-react";
 
-const steps = [
+interface Step {
+    number: string;
+    icon: string;
+    title: string;
+    description: string;
+    color?: string;
+    borderColor?: string;
+    circleBg?: string;
+}
+
+interface HowItWorksSectionProps {
+    title?: string;
+    subtitle?: string;
+    content?: {
+        steps?: Step[];
+    };
+}
+
+const DEFAULT_STEPS = [
     {
         number: "01",
-        icon: Search,
+        icon: "Search",
         title: "اختر تكييفك",
         description: "تصفح مجموعتنا الواسعة من التكييفات واختر ما يناسب احتياجاتك",
         color: "from-blue-500 to-blue-600",
@@ -12,7 +30,7 @@ const steps = [
     },
     {
         number: "02",
-        icon: ShoppingCart,
+        icon: "ShoppingCart",
         title: "أضف للسلة",
         description: "اختر الكمية المطلوبة وأضف المنتجات لسلة التسوق",
         color: "from-green-500 to-emerald-600",
@@ -21,7 +39,7 @@ const steps = [
     },
     {
         number: "03",
-        icon: Truck,
+        icon: "Truck",
         title: "نوصلك",
         description: "توصيل سريع لباب منزلك في جميع المحافظات",
         color: "from-orange-500 to-amber-600",
@@ -30,7 +48,7 @@ const steps = [
     },
     {
         number: "04",
-        icon: CheckCircle,
+        icon: "CheckCircle",
         title: "تركيب احترافي",
         description: "فريق متخصص يقوم بالتركيب وضمان التشغيل",
         color: "from-purple-500 to-violet-600",
@@ -39,7 +57,13 @@ const steps = [
     },
 ];
 
-const HowItWorksSection = () => {
+const ICON_MAP: any = { Search, ShoppingCart, Truck, CheckCircle };
+
+const HowItWorksSection = ({ title, subtitle, content }: HowItWorksSectionProps) => {
+    const steps = content?.steps || DEFAULT_STEPS;
+    const displayTitle = title || "كيف نعمل";
+    const displaySubtitle = subtitle || "أربع خطوات بسيطة";
+
     return (
         <section className="py-16 md:py-24 bg-gradient-to-br from-muted/50 to-background relative overflow-hidden">
             {/* Background decorations */}
@@ -53,13 +77,13 @@ const HowItWorksSection = () => {
                         data-aos="fade-down"
                         className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4"
                     >
-                        كيف نعمل
+                        {displayTitle}
                     </span>
                     <h2
                         data-aos="fade-up"
                         className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4"
                     >
-                        أربع خطوات <span className="text-secondary">بسيطة</span>
+                        {displaySubtitle}
                     </h2>
                     <p
                         data-aos="fade-up"
@@ -84,7 +108,7 @@ const HowItWorksSection = () => {
                             <div
                                 key={`num-${index}`}
                                 className="relative z-10 w-14 h-14 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-gray-900"
-                                style={{ backgroundColor: step.circleBg }}
+                                style={{ backgroundColor: step.circleBg || '#3b82f6' }}
                             >
                                 <span className="text-white text-lg font-bold">{step.number}</span>
                             </div>
@@ -94,38 +118,41 @@ const HowItWorksSection = () => {
 
                 {/* Cards Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                    {steps.map((step, index) => (
-                        <div
-                            key={index}
-                            data-aos="fade-up"
-                            data-aos-delay={index * 100}
-                            className="group relative"
-                        >
-                            {/* Mobile Number Badge */}
+                    {steps.map((step, index) => {
+                        const IconComp = ICON_MAP[step.icon] || Search;
+                        return (
                             <div
-                                className="lg:hidden absolute -top-3 right-4 w-10 h-10 rounded-full flex items-center justify-center shadow-md z-10"
-                                style={{ backgroundColor: step.circleBg }}
+                                key={index}
+                                data-aos="fade-up"
+                                data-aos-delay={index * 100}
+                                className="group relative"
                             >
-                                <span className="text-white text-sm font-bold">{step.number}</span>
-                            </div>
-
-                            {/* Card */}
-                            <div className={`bg-card rounded-2xl p-6 md:p-8 border-t-4 ${step.borderColor} shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full text-center`}>
-                                {/* Icon */}
-                                <div className={`w-16 h-16 mx-auto bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
-                                    <step.icon className="h-8 w-8 text-white" />
+                                {/* Mobile Number Badge */}
+                                <div
+                                    className="lg:hidden absolute -top-3 right-4 w-10 h-10 rounded-full flex items-center justify-center shadow-md z-10"
+                                    style={{ backgroundColor: step.circleBg || '#3b82f6' }}
+                                >
+                                    <span className="text-white text-sm font-bold">{step.number}</span>
                                 </div>
 
-                                {/* Content */}
-                                <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-secondary transition-colors">
-                                    {step.title}
-                                </h3>
-                                <p className="text-muted-foreground text-sm leading-relaxed">
-                                    {step.description}
-                                </p>
+                                {/* Card */}
+                                <div className={`bg-card rounded-2xl p-6 md:p-8 border-t-4 ${step.borderColor || 'border-blue-500'} shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full text-center`}>
+                                    {/* Icon */}
+                                    <div className={`w-16 h-16 mx-auto bg-gradient-to-br ${step.color || 'from-blue-500 to-blue-600'} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                                        <IconComp className="h-8 w-8 text-white" />
+                                    </div>
+
+                                    {/* Content */}
+                                    <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-secondary transition-colors">
+                                        {step.title}
+                                    </h3>
+                                    <p className="text-muted-foreground text-sm leading-relaxed">
+                                        {step.description}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </section>

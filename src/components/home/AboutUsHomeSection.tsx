@@ -18,13 +18,54 @@ const floatingAnimation = {
         transition: {
             duration: 4,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut" as any
         }
     }
 };
 
-const AboutUsHomeSection = () => {
+// Helper to map icon string names to Lucide components
+const getIcon = (iconName: string) => {
+    switch (iconName?.toLowerCase()) {
+        case 'building': return Building2;
+        case 'users': return Users;
+        case 'award': return Award;
+        case 'target': return Target;
+        case 'shield': return Target; // Fallback helper
+        case 'clock': return Building2; // Fallback helper
+        default: return Users;
+    }
+};
+
+interface AboutUsSectionProps {
+    title?: string;
+    subtitle?: string;
+    content?: any;
+}
+
+const AboutUsHomeSection = ({ title, subtitle, content }: AboutUsSectionProps) => {
     const { data: banner } = usePageBanner('about_us_home');
+
+    // Merge props with defaults/banner
+    const displayTitle = title || banner?.title || "وان اير للتكييف";
+    const displaySubtitle = subtitle || banner?.subtitle || "نسعى لتقديم أفضل حلول التكييف بأعلى جودة وأفضل سعر.";
+    const badge = content?.badge || "من نحن";
+    const description = content?.description || "تأسست شركة وان اير لتكون الخيار الأول للعملاء الباحثين عن الجودة والسعر المناسب. نقدم تشكيلة واسعة من التكييفات مع ضمان شامل.";
+    const buttonText = content?.buttonText || "اعرف المزيد عنا";
+    const buttonLink = content?.buttonLink || "/about";
+
+    // Use stats from content if available, otherwise default
+    const displayStats = content?.stats && Array.isArray(content.stats) && content.stats.length > 0
+        ? content.stats.map((s: any) => ({
+            icon: getIcon(s.iconType || s.icon),
+            value: ((s.prefix || '') + s.value + (s.suffix || '')),
+            label: s.label
+        }))
+        : [
+            { icon: Building2, value: "10+", label: "سنوات خبرة" },
+            { icon: Users, value: "5000+", label: "عميل سعيد" },
+            { icon: Award, value: "15+", label: "علامة تجارية" },
+            { icon: Target, value: "100%", label: "ضمان الجودة" },
+        ];
 
     return (
         <section className="py-16 md:py-24 bg-gradient-to-br from-slate-50 via-white to-slate-50 overflow-hidden">
@@ -84,23 +125,22 @@ const AboutUsHomeSection = () => {
                                     className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-4"
                                     whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.3)" }}
                                 >
-                                    من نحن
+                                    {badge}
                                 </motion.span>
 
                                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                                    {banner?.title || "وان اير للتكييف"}
+                                    {displayTitle}
                                 </h2>
 
                                 <p className="text-lg text-white/90 mb-4 leading-relaxed">
-                                    {banner?.subtitle || "نسعى لتقديم أفضل حلول التكييف بأعلى جودة وأفضل سعر. نحن وكلاء معتمدون لأكبر العلامات التجارية العالمية."}
+                                    {displaySubtitle}
                                 </p>
 
-                                <p className="text-white/75 mb-8 leading-relaxed text-sm md:text-base">
-                                    تأسست شركة وان اير لتكون الخيار الأول للعملاء الباحثين عن الجودة والسعر المناسب.
-                                    نقدم تشكيلة واسعة من التكييفات مع ضمان شامل وخدمة توصيل وتركيب متميزة.
+                                <p className="text-white/75 mb-8 leading-relaxed text-sm md:text-base whitespace-pre-line">
+                                    {description}
                                 </p>
 
-                                <Link to="/about">
+                                <Link to={buttonLink}>
                                     <motion.div
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
@@ -109,7 +149,7 @@ const AboutUsHomeSection = () => {
                                             size="lg"
                                             className="bg-white text-primary hover:bg-white/90 font-bold px-8 shadow-lg"
                                         >
-                                            اعرف المزيد عنا
+                                            {buttonText}
                                         </Button>
                                     </motion.div>
                                 </Link>
@@ -123,7 +163,7 @@ const AboutUsHomeSection = () => {
                                 transition={{ duration: 0.6, delay: 0.4 }}
                                 className="grid grid-cols-2 gap-4"
                             >
-                                {stats.map((stat, index) => (
+                                {displayStats.map((stat: any, index: number) => (
                                     <motion.div
                                         key={index}
                                         initial={{ opacity: 0, y: 20 }}
@@ -145,7 +185,7 @@ const AboutUsHomeSection = () => {
                                         >
                                             <stat.icon className="w-5 h-5 text-white" />
                                         </motion.div>
-                                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-1" dir="ltr">
                                             {stat.value}
                                         </h3>
                                         <p className="text-white/75 text-xs md:text-sm">

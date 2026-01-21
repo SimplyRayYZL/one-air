@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSiteSettings, useUpdateSettings, ShippingArea } from "@/hooks/useSettings";
 import { Link } from "react-router-dom";
 import {
     ArrowRight, Loader2, Truck, Package, Wrench, Save, Info, Gift, Plus, Trash2, MapPin
@@ -14,12 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-interface ShippingArea {
-    id: string;
-    name: string;
-    fee: number;
-    isActive: boolean;
-}
+
 
 interface DeliverySettings {
     delivery_only_enabled: boolean;
@@ -33,7 +28,9 @@ interface DeliverySettings {
 }
 
 const DeliverySettingsAdmin = () => {
-    const queryClient = useQueryClient();
+    const { data: dbSettings, isLoading } = useSiteSettings();
+    const updateSettingsMutation = useUpdateSettings();
+
     const [settings, setSettings] = useState<DeliverySettings>({
         delivery_only_enabled: true,
         delivery_installation_enabled: true,
@@ -44,6 +41,7 @@ const DeliverySettingsAdmin = () => {
         free_shipping_threshold: 0,
         delivery_message: "التوصيل خلال 2-5 أيام عمل",
     });
+
     const [shippingAreas, setShippingAreas] = useState<ShippingArea[]>([
         { id: "1", name: "القاهرة", fee: 50, isActive: true },
         { id: "2", name: "الجيزة", fee: 50, isActive: true },
@@ -51,84 +49,50 @@ const DeliverySettingsAdmin = () => {
     ]);
     const [hasChanges, setHasChanges] = useState(false);
 
-    // Fetch all delivery settings
-    const { data: dbSettings, isLoading } = useQuery({
-        queryKey: ["delivery-settings"],
-        queryFn: async () => {
-            const keys = [
-                'delivery_only_enabled', 'delivery_installation_enabled', 'pickup_enabled', 'free_delivery_enabled',
-                'delivery_fee', 'installation_fee', 'free_shipping_threshold', 'delivery_message', 'shipping_areas'
-            ];
-
-            const { data } = await (supabase as any)
-                .from("settings")
-                .select("key, value")
-                .in("key", keys);
-
-            return data || [];
-        },
-    });
-
     // Update settings state when data loads
     useEffect(() => {
         if (dbSettings) {
-            const newSettings = { ...settings };
-            dbSettings.forEach((s: { key: string; value: string }) => {
-                if (s.key === 'shipping_areas') {
-                    try {
-                        const areas = JSON.parse(s.value);
-                        if (Array.isArray(areas)) {
-                            setShippingAreas(areas);
-                        }
-                    } catch (e) {
-                        console.error('Failed to parse shipping_areas:', e);
-                    }
-                } else if (s.key.includes('enabled')) {
-                    (newSettings as any)[s.key] = s.value === 'true';
-                } else if (s.key.includes('fee') || s.key.includes('threshold')) {
-                    (newSettings as any)[s.key] = parseInt(s.value) || 0;
-                } else if (s.key === 'delivery_message') {
-                    (newSettings as any)[s.key] = s.value;
-                }
+            setSettings({
+                delivery_only_enabled: dbSettings.delivery_only_enabled ?? true,
+                delivery_installation_enabled: dbSettings.delivery_with_installation_enabled ?? true,
+                pickup_enabled: dbSettings.pickup_enabled ?? true,
+                free_delivery_enabled: dbSettings.free_delivery_installation_enabled ?? true,
+                delivery_fee: 0,
+                installation_fee: dbSettings.installation_fee ?? 0,
+                free_shipping_threshold: dbSettings.free_shipping_threshold ?? 0,
+                delivery_message: dbSettings.delivery_message ?? "التوصيل خلال 2-5 أيام عمل",
             });
-            setSettings(newSettings);
+
+            if (dbSettings.shipping_areas) {
+                setShippingAreas(dbSettings.shipping_areas);
+            }
         }
     }, [dbSettings]);
 
-    // Save mutation
-    const saveMutation = useMutation({
-        mutationFn: async () => {
-            // Save delivery settings
-            const updates = Object.entries(settings).map(([key, value]) => ({
-                key,
-                value: String(value),
-            }));
+    // Save handler
+    const handleSave = () => {
+        if (!dbSettings) return;
 
-            for (const update of updates) {
-                await (supabase as any)
-                    .from("settings")
-                    .upsert(update, { onConflict: 'key' });
+        const updatedSettings = {
+            ...dbSettings,
+            delivery_only_enabled: settings.delivery_only_enabled,
+            delivery_with_installation_enabled: settings.delivery_installation_enabled,
+            pickup_enabled: settings.pickup_enabled,
+            free_delivery_installation_enabled: settings.free_delivery_enabled,
+            installation_fee: settings.installation_fee,
+            free_shipping_threshold: settings.free_shipping_threshold,
+            delivery_message: settings.delivery_message,
+            shipping_areas: shippingAreas,
+        };
+
+        updateSettingsMutation.mutate(updatedSettings, {
+            onSuccess: () => {
+                setHasChanges(false);
             }
+        });
+    };
 
-            // Save shipping areas
-            await (supabase as any)
-                .from("settings")
-                .upsert({
-                    key: 'shipping_areas',
-                    value: JSON.stringify(shippingAreas)
-                }, { onConflict: 'key' });
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["delivery-settings"] });
-            toast.success("تم حفظ الإعدادات");
-            setHasChanges(false);
-        },
-        onError: () => {
-            toast.error("فشل حفظ الإعدادات");
-        },
-    });
-
-    const updateSetting = (key: keyof DeliverySettings, value: boolean | number) => {
+    const updateSetting = (key: keyof DeliverySettings, value: boolean | number | string) => {
         setSettings(prev => ({ ...prev, [key]: value }));
         setHasChanges(true);
     };
@@ -174,11 +138,11 @@ const DeliverySettingsAdmin = () => {
                                     {enabledCount} خيارات مفعّلة
                                 </Badge>
                                 <Button
-                                    onClick={() => saveMutation.mutate()}
-                                    disabled={!hasChanges || saveMutation.isPending}
+                                    onClick={handleSave}
+                                    disabled={!hasChanges || updateSettingsMutation.isPending}
                                     className="gap-2 bg-secondary hover:bg-secondary/90"
                                 >
-                                    {saveMutation.isPending ? (
+                                    {updateSettingsMutation.isPending ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                     ) : (
                                         <Save className="h-4 w-4" />

@@ -2,7 +2,20 @@ import { useState } from "react";
 import { HelpCircle, MessageCircle, ChevronDown } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSettings";
 
-const faqs = [
+interface FAQ {
+    question: string;
+    answer: string;
+}
+
+interface FAQSectionProps {
+    title?: string;
+    subtitle?: string;
+    content?: {
+        faqs?: FAQ[];
+    };
+}
+
+const DEFAULT_FAQS = [
     {
         question: "كم مدة الضمان على التكييفات؟",
         answer: "نوفر ضمان رسمي يصل إلى 5 سنوات على جميع التكييفات من الوكيل المعتمد، ويشمل الضمان الكمبروسور والأجزاء الداخلية."
@@ -25,13 +38,12 @@ const faqs = [
     },
 ];
 
-const FAQSection = () => {
+const FAQSection = ({ title, subtitle, content }: FAQSectionProps) => {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
     const { data: settings } = useSiteSettings();
-
-    const toggleFAQ = (index: number) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
+    const faqs = content?.faqs || DEFAULT_FAQS;
+    const displayTitle = title || "عندك سؤال؟";
+    const displaySubtitle = subtitle || "إجابات لأكثر الأسئلة شيوعاً عن خدماتنا ومنتجاتنا";
 
     return (
         <section className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
@@ -55,7 +67,7 @@ const FAQSection = () => {
                             data-aos-delay="100"
                             className="text-3xl md:text-4xl font-bold text-foreground mb-4"
                         >
-                            عندك سؤال؟
+                            {displayTitle}
                             <br />
                             <span className="text-primary">عندنا الإجابة</span>
                         </h2>
@@ -64,7 +76,7 @@ const FAQSection = () => {
                             data-aos-delay="200"
                             className="text-muted-foreground mb-8"
                         >
-                            إجابات لأكثر الأسئلة شيوعاً عن خدماتنا ومنتجاتنا
+                            {displaySubtitle}
                         </p>
 
                         {/* Contact Card */}
@@ -99,7 +111,7 @@ const FAQSection = () => {
                                 className="bg-white rounded-2xl border shadow-sm overflow-hidden"
                             >
                                 <button
-                                    onClick={() => toggleFAQ(index)}
+                                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
                                     className="w-full flex items-center justify-between p-5 md:p-6 text-right gap-4 hover:bg-gray-50 transition-colors"
                                 >
                                     <span className="font-bold text-foreground text-base md:text-lg flex-1 text-right">

@@ -116,7 +116,7 @@ const Index = () => {
                     return <CTASection key={section.id} {...section} />;
                   case 'about':
                   case 'about_us_home':
-                    return <AboutUsHomeSection key={section.id} />;
+                    return <AboutUsHomeSection key={section.id} {...section} />;
                   default:
                     return null;
                 }

@@ -216,7 +216,7 @@ const SectionsAdmin = () => {
                                             <div className="rounded-lg border bg-muted/10 p-4">
                                                 <Label className="mb-2 block font-semibold">إعدادات المحتوى</Label>
 
-                                                {editingSection?.type === 'about' ? (
+                                                {(editingSection?.type === 'about' || editingSection?.type === 'about_us_home') ? (
                                                     <div className="space-y-6">
                                                         {/* Badge Text */}
                                                         <div className="space-y-2">
@@ -462,6 +462,261 @@ const SectionsAdmin = () => {
                                                             <span className="font-bold block mb-1">الأيقونات المتاحة:</span>
                                                             Truck, Shield, Headphones, Wrench, Award, Star, Heart, Zap, Clock, ThumbsUp
                                                         </div>
+                                                    </div>
+                                                ) : editingSection?.type === 'how_it_works' ? (
+                                                    <div className="space-y-6">
+                                                        <Label className="text-base font-semibold block">خطوات العمل</Label>
+                                                        {((editingSection.content as any)?.steps || []).map((step: any, idx: number) => (
+                                                            <div key={idx} className="bg-muted/30 rounded-lg p-4 space-y-3 relative group">
+                                                                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                                        onClick={() => {
+                                                                            const currentSteps = (editingSection.content as any)?.steps || [];
+                                                                            const newSteps = currentSteps.filter((_: any, i: number) => i !== idx);
+                                                                            setEditingSection(prev => prev ? {
+                                                                                ...prev,
+                                                                                content: { ...((prev.content as any) || {}), steps: newSteps }
+                                                                            } : null);
+                                                                        }}
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                                <p className="text-xs text-muted-foreground font-medium">خطوة {idx + 1}</p>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    <div className="space-y-2">
+                                                                        <Label className="text-xs">العنوان</Label>
+                                                                        <Input
+                                                                            value={step.title || ''}
+                                                                            onChange={(e) => {
+                                                                                const currentSteps = (editingSection.content as any)?.steps || [];
+                                                                                const newSteps = [...currentSteps];
+                                                                                newSteps[idx] = { ...newSteps[idx], title: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), steps: newSteps }
+                                                                                } : null);
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <Label className="text-xs">الأيقونة</Label>
+                                                                        <Input
+                                                                            value={step.icon || ''}
+                                                                            onChange={(e) => {
+                                                                                const currentSteps = (editingSection.content as any)?.steps || [];
+                                                                                const newSteps = [...currentSteps];
+                                                                                newSteps[idx] = { ...newSteps[idx], icon: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), steps: newSteps }
+                                                                                } : null);
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="md:col-span-2 space-y-2">
+                                                                        <Label className="text-xs">الوصف</Label>
+                                                                        <Input
+                                                                            value={step.description || ''}
+                                                                            onChange={(e) => {
+                                                                                const currentSteps = (editingSection.content as any)?.steps || [];
+                                                                                const newSteps = [...currentSteps];
+                                                                                newSteps[idx] = { ...newSteps[idx], description: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), steps: newSteps }
+                                                                                } : null);
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="w-full gap-2 border-dashed"
+                                                            onClick={() => {
+                                                                const currentSteps = (editingSection.content as any)?.steps || [];
+                                                                setEditingSection(prev => prev ? {
+                                                                    ...prev,
+                                                                    content: {
+                                                                        ...((prev.content as any) || {}),
+                                                                        steps: [...currentSteps, { icon: 'Search', title: 'خطوة جديدة', description: 'وصف الخطوة', number: `0${currentSteps.length + 1}` }]
+                                                                    }
+                                                                } : null);
+                                                            }}
+                                                        >
+                                                            <Plus className="h-4 w-4" /> إضافة خطوة
+                                                        </Button>
+                                                    </div>
+                                                ) : editingSection?.type === 'testimonials' ? (
+                                                    <div className="space-y-6">
+                                                        <Label className="text-base font-semibold block">آراء العملاء</Label>
+                                                        {((editingSection.content as any)?.testimonials || []).map((t: any, idx: number) => (
+                                                            <div key={idx} className="bg-muted/30 rounded-lg p-4 space-y-3 relative group">
+                                                                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                                        onClick={() => {
+                                                                            const current = (editingSection.content as any)?.testimonials || [];
+                                                                            const newItems = current.filter((_: any, i: number) => i !== idx);
+                                                                            setEditingSection(prev => prev ? {
+                                                                                ...prev,
+                                                                                content: { ...((prev.content as any) || {}), testimonials: newItems }
+                                                                            } : null);
+                                                                        }}
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                                <p className="text-xs text-muted-foreground font-medium">رأي {idx + 1}</p>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    <div className="space-y-2">
+                                                                        <Label className="text-xs">الاسم</Label>
+                                                                        <Input
+                                                                            value={t.name || ''}
+                                                                            onChange={(e) => {
+                                                                                const current = (editingSection.content as any)?.testimonials || [];
+                                                                                const newItems = [...current];
+                                                                                newItems[idx] = { ...newItems[idx], name: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), testimonials: newItems }
+                                                                                } : null);
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2">
+                                                                        <Label className="text-xs">الموقع</Label>
+                                                                        <Input
+                                                                            value={t.location || ''}
+                                                                            onChange={(e) => {
+                                                                                const current = (editingSection.content as any)?.testimonials || [];
+                                                                                const newItems = [...current];
+                                                                                newItems[idx] = { ...newItems[idx], location: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), testimonials: newItems }
+                                                                                } : null);
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="md:col-span-2 space-y-2">
+                                                                        <Label className="text-xs">المحتوى</Label>
+                                                                        <Textarea
+                                                                            value={t.content || ''}
+                                                                            onChange={(e) => {
+                                                                                const current = (editingSection.content as any)?.testimonials || [];
+                                                                                const newItems = [...current];
+                                                                                newItems[idx] = { ...newItems[idx], content: e.target.value };
+                                                                                setEditingSection(prev => prev ? {
+                                                                                    ...prev,
+                                                                                    content: { ...((prev.content as any) || {}), testimonials: newItems }
+                                                                                } : null);
+                                                                            }}
+                                                                            rows={2}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="w-full gap-2 border-dashed"
+                                                            onClick={() => {
+                                                                const current = (editingSection.content as any)?.testimonials || [];
+                                                                setEditingSection(prev => prev ? {
+                                                                    ...prev,
+                                                                    content: {
+                                                                        ...((prev.content as any) || {}),
+                                                                        testimonials: [...current, { name: 'اسم العميل', location: 'القاهرة', content: 'رأي ممتاز', rating: 5, id: Date.now() }]
+                                                                    }
+                                                                } : null);
+                                                            }}
+                                                        >
+                                                            <Plus className="h-4 w-4" /> إضاف رأي جديد
+                                                        </Button>
+                                                    </div>
+                                                ) : editingSection?.type === 'faq' ? (
+                                                    <div className="space-y-6">
+                                                        <Label className="text-base font-semibold block">الأسئلة الشائعة</Label>
+                                                        {((editingSection.content as any)?.faqs || []).map((q: any, idx: number) => (
+                                                            <div key={idx} className="bg-muted/30 rounded-lg p-4 space-y-3 relative group">
+                                                                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                                        onClick={() => {
+                                                                            const current = (editingSection.content as any)?.faqs || [];
+                                                                            const newItems = current.filter((_: any, i: number) => i !== idx);
+                                                                            setEditingSection(prev => prev ? {
+                                                                                ...prev,
+                                                                                content: { ...((prev.content as any) || {}), faqs: newItems }
+                                                                            } : null);
+                                                                        }}
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                                <p className="text-xs text-muted-foreground font-medium">سؤال {idx + 1}</p>
+                                                                <div className="space-y-2">
+                                                                    <Label className="text-xs">السؤال</Label>
+                                                                    <Input
+                                                                        value={q.question || ''}
+                                                                        onChange={(e) => {
+                                                                            const current = (editingSection.content as any)?.faqs || [];
+                                                                            const newItems = [...current];
+                                                                            newItems[idx] = { ...newItems[idx], question: e.target.value };
+                                                                            setEditingSection(prev => prev ? {
+                                                                                ...prev,
+                                                                                content: { ...((prev.content as any) || {}), faqs: newItems }
+                                                                            } : null);
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    <Label className="text-xs">الإجابة</Label>
+                                                                    <Textarea
+                                                                        value={q.answer || ''}
+                                                                        onChange={(e) => {
+                                                                            const current = (editingSection.content as any)?.faqs || [];
+                                                                            const newItems = [...current];
+                                                                            newItems[idx] = { ...newItems[idx], answer: e.target.value };
+                                                                            setEditingSection(prev => prev ? {
+                                                                                ...prev,
+                                                                                content: { ...((prev.content as any) || {}), faqs: newItems }
+                                                                            } : null);
+                                                                        }}
+                                                                        rows={2}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="w-full gap-2 border-dashed"
+                                                            onClick={() => {
+                                                                const current = (editingSection.content as any)?.faqs || [];
+                                                                setEditingSection(prev => prev ? {
+                                                                    ...prev,
+                                                                    content: {
+                                                                        ...((prev.content as any) || {}),
+                                                                        faqs: [...current, { question: 'سؤال جديد؟', answer: 'إجابة جديدة' }]
+                                                                    }
+                                                                } : null);
+                                                            }}
+                                                        >
+                                                            <Plus className="h-4 w-4" /> إضاف سؤال جديد
+                                                        </Button>
                                                     </div>
                                                 ) : (
                                                     <div className="space-y-2">
