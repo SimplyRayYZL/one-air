@@ -2,19 +2,10 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
-    Settings,
-    Store,
-    Share2,
-    BarChart3,
-    Image,
-    FileText,
-    Truck,
-    Search,
-    Database,
-    Save,
-    Loader2,
-    ArrowRight,
-import { Save, Loader2, Image as ImageIcon, Plus, Trash2, LayoutGrid, Type, Link as LinkIcon, Facebook, Instagram, Twitter, Youtube, Linkedin, Mail, Phone, MapPin, Globe, Database, PenTool, Search, Layout, Bell } from "lucide-react";
+    Settings, Store, Share2, BarChart3, Image, FileText, Truck, Search, Database, Save, Loader2, ArrowRight,
+    Image as ImageIcon, Plus, Trash2, LayoutGrid, Type, Link as LinkIcon, Facebook, Instagram, Twitter, Youtube,
+    Linkedin, Mail, Phone, MapPin, Globe, PenTool, Layout, Bell, MessageCircle, Eye, Clock
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -425,6 +416,13 @@ const SettingsAdmin = () => {
                                     </div>
                                     <span className="font-semibold">قاعدة البيانات</span>
                                     <span className="text-[10px] opacity-70">Backup & SQL</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="notifications" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-yellow-500 data-[state=active]:to-yellow-600 data-[state=active]:text-white data-[state=active]:border-yellow-500">
+                                    <div className="p-3 bg-yellow-500/10 rounded-xl">
+                                        <Bell className="h-6 w-6 text-yellow-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">الإشعارات</span>
+                                    <span className="text-[10px] opacity-70">البريد الإلكتروني</span>
                                 </TabsTrigger>
                             </TabsList>
                         </div>

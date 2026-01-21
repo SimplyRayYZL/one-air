@@ -1,6 +1,6 @@
-// import { useSiteSettings } from "@/hooks/useSettings"; // Already imported if creating hook usage
+import { useState, useEffect } from "react";
 import { sendOrderEmails } from "@/lib/email";
-import { useSiteSettings } from "@/hooks/useSettings";
+// useSiteSettings is imported later with getActiveShippingAreas
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, CreditCard, Truck, MapPin, Phone, User, Mail, CheckCircle, LogIn } from "lucide-react";
@@ -198,20 +198,8 @@ const Checkout = () => {
             // Send email notifications (Simulation)
             if (settings) {
                 await sendOrderEmails({
-                    id: orderData[0].id,
-                    customerName: formData.fullName,
-                    customerEmail: formData.email,
-                    total: grandTotal,
-                    items: items
-                }, settings);
-            }
-
-
-            // Send email notifications (Simulation)
-            if (settings) {
-                await sendOrderEmails({
-                    id: orderData[0].id,
-                    customerName: formData.fullName,
+                    id: order.id,
+                    customerName: formData.customerName,
                     customerEmail: formData.email,
                     total: grandTotal,
                     items: items
