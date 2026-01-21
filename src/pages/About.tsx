@@ -9,9 +9,9 @@ import aboutBanner from "@/assets/banners/about-banner.jpg";
 import { Button } from "@/components/ui/button";
 
 const stats = [
-  { icon: Building2, value: "15+", label: "سنة خبرة", color: "from-blue-500 to-cyan-500" },
+  { icon: Building2, value: "20", label: "سنة خبرة", color: "from-blue-500 to-cyan-500" },
   { icon: Users, value: "50,000+", label: "عميل سعيد", color: "from-green-500 to-emerald-500" },
-  { icon: Award, value: "9", label: "ماركة معتمدة", color: "from-orange-500 to-amber-500" },
+  { icon: Award, value: "2", label: "ماركة معتمدة", color: "from-orange-500 to-amber-500" },
   { icon: Target, value: "100%", label: "ضمان الجودة", color: "from-purple-500 to-violet-500" },
 ];
 

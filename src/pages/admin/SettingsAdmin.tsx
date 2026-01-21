@@ -14,23 +14,7 @@ import {
     Save,
     Loader2,
     ArrowRight,
-    Phone,
-    Clock,
-    Globe,
-    Facebook,
-    Instagram,
-    Youtube,
-    Twitter,
-    MessageCircle,
-    Plus,
-    Trash2,
-    GripVertical,
-    Eye,
-    EyeOff,
-    Package,
-    Wrench,
-    Gift,
-} from "lucide-react";
+import { Save, Loader2, Image as ImageIcon, Plus, Trash2, LayoutGrid, Type, Link as LinkIcon, Facebook, Instagram, Twitter, Youtube, Linkedin, Mail, Phone, MapPin, Globe, Database, PenTool, Search, Layout, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -216,6 +200,35 @@ CREATE POLICY "Anyone can view order items"
 CREATE POLICY "Anyone can create order items"
     ON order_items FOR INSERT
     WITH CHECK (true);
+
+-- =====================================================
+-- SITE SETTINGS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS site_settings (
+    id TEXT PRIMARY KEY,
+    settings JSONB,
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view site settings"
+    ON site_settings FOR SELECT
+    USING (true);
+
+CREATE POLICY "Authenticated users can update site settings"
+    ON site_settings FOR UPDATE
+    USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can insert site settings"
+    ON site_settings FOR INSERT
+    WITH CHECK (auth.role() = 'authenticated');
+
+-- Insert default row if not exists
+INSERT INTO site_settings (id, settings)
+VALUES ('main', '{}'::jsonb)
+ON CONFLICT (id) DO NOTHING;
 
 -- =====================================================
 -- SAMPLE DATA (Optional)
@@ -1121,6 +1134,40 @@ const SettingsAdmin = () => {
                                     )}
                                     <p className="text-xs text-muted-foreground">
                                         💡 بعد الحفظ، الملف سيكون متاح على: /{formData.google_verification_file_name || "googleXXXXXX.html"}
+                                    </p>
+                                </div>
+                            </div>
+                        </TabsContent>
+
+                        {/* Notifications Tab */}
+                        <TabsContent value="notifications" className="bg-card rounded-xl p-6 space-y-6">
+                            <h2 className="text-xl font-bold border-b pb-4 flex items-center gap-2">
+                                <Bell className="h-6 w-6 text-secondary" />
+                                إعدادات الإشعارات
+                            </h2>
+
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between p-4 border rounded-xl">
+                                    <div>
+                                        <Label>تفعيل إشعارات البريد الإلكتروني</Label>
+                                        <p className="text-xs text-muted-foreground">إرسال رسائل عند استلام طلبات جديدة</p>
+                                    </div>
+                                    <Switch
+                                        checked={formData.email_notifications_enabled}
+                                        onCheckedChange={(checked) => handleChange("email_notifications_enabled", checked)}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>البريد الإلكتروني للإشعارات</Label>
+                                    <Input
+                                        value={formData.notification_email}
+                                        onChange={(e) => handleChange("notification_email", e.target.value)}
+                                        placeholder="admin@example.com"
+                                        disabled={!formData.email_notifications_enabled}
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        سيتم إرسال تفاصيل الطلبات الجديدة إلى هذا البريد
                                     </p>
                                 </div>
                             </div>

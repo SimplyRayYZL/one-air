@@ -127,6 +127,10 @@ export interface SiteSettings {
         };
     };
 
+    // Notifications
+    notification_email: string;
+    email_notifications_enabled: boolean;
+
     // Database
     database_config: DatabaseConfig;
 }
@@ -266,6 +270,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
         group2: { title: "منتجات مميزة", description: "تشكيلة مختارة من أفضل المنتجات مبيعاً", title_color: "#152C73", text_color: "#000000", badge_text: "الأكثر مبيعاً" },
         group3: { title: "عروض خاصة", description: "لا تفوت فرصة الحصول على أفضل الأسعار", title_color: "#152C73", text_color: "#000000", badge_text: "خصومات" },
     },
+
+    // Notifications
+    notification_email: "",
+    email_notifications_enabled: false,
 
     // Database config
     database_config: {

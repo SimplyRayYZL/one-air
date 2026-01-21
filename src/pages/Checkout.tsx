@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+// import { useSiteSettings } from "@/hooks/useSettings"; // Already imported if creating hook usage
+import { sendOrderEmails } from "@/lib/email";
+import { useSiteSettings } from "@/hooks/useSettings";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, CreditCard, Truck, MapPin, Phone, User, Mail, CheckCircle, LogIn } from "lucide-react";
@@ -192,6 +194,30 @@ const Checkout = () => {
             trackCompletePurchase(order.id, totalPrice);
 
             // Clear cart and navigate to success page
+
+            // Send email notifications (Simulation)
+            if (settings) {
+                await sendOrderEmails({
+                    id: orderData[0].id,
+                    customerName: formData.fullName,
+                    customerEmail: formData.email,
+                    total: grandTotal,
+                    items: items
+                }, settings);
+            }
+
+
+            // Send email notifications (Simulation)
+            if (settings) {
+                await sendOrderEmails({
+                    id: orderData[0].id,
+                    customerName: formData.fullName,
+                    customerEmail: formData.email,
+                    total: grandTotal,
+                    items: items
+                }, settings);
+            }
+
             clearCart();
             toast.success("تم تأكيد طلبك بنجاح!");
             navigate(`/order-success/${order.id}`);

@@ -163,9 +163,8 @@ const Cart = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">التوصيل</span>
-                        <span className="text-green-600 font-bold flex items-center gap-1">
-                          <CheckCircle className="h-4 w-4" />
-                          مجاني
+                        <span className="text-muted-foreground text-sm font-medium flex items-center gap-1">
+                          يحدد عند الدفع
                         </span>
                       </div>
                     </div>
