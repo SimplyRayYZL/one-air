@@ -1036,7 +1036,7 @@ const ProductsAdmin = () => {
                         </TableCell>
                         <TableCell>{product.capacity || "-"}</TableCell>
                         <TableCell>
-                          {canEdit() ? (
+                          {canAccess('products') ? (
                             <Button
                               variant={product.is_active ? "default" : "outline"}
                               size="sm"
@@ -1052,7 +1052,7 @@ const ProductsAdmin = () => {
                           )}
                         </TableCell>
                         <TableCell>
-                          {canEdit() ? (
+                          {canAccess('products') ? (
                             <div className="flex gap-1">
                               <Button
                                 variant="ghost"
