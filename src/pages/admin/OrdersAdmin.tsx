@@ -73,7 +73,8 @@ interface Order {
 }
 
 const statusOptions = [
-    { value: "pending", label: "مؤكد", color: "bg-green-500" },
+    { value: "pending", label: "قيد التنفيذ", color: "bg-orange-500" },
+    { value: "confirmed", label: "مؤكد", color: "bg-green-500" },
     { value: "cancelled", label: "ملغي/مسترجع", color: "bg-red-500" },
 ];
 
@@ -765,7 +766,7 @@ const OrdersAdmin = () => {
                                             phone: editForm.phone,
                                             shipping_address: editForm.shipping_address,
                                             notes: editForm.notes,
-                                            status: editForm.status as "pending" | "processing" | "shipped" | "delivered" | "cancelled"
+                                            status: editForm.status as any
                                         })
                                         .eq("id", editingOrder.id);
 
