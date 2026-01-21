@@ -439,13 +439,7 @@ const ProductsAdmin = () => {
                 <RefreshCw className="w-4 h-4" />
                 تحديث
               </Button>
-              {/* Show role badge */}
-              {role === 'viewer' && (
-                <Badge variant="secondary" className="h-9 px-3 flex items-center gap-1">
-                  <Eye className="w-4 h-4" />
-                  عرض فقط
-                </Badge>
-              )}
+
               {/* Only show Add Product button for admin */}
               {canAccess('products') && (
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -915,7 +909,7 @@ const ProductsAdmin = () => {
                   محدد: {selectedProducts.length} منتج
                 </span>
                 {/* Only show action buttons for admin */}
-                {canEdit() && (
+                {canAccess('products') && (
                   <>
                     <Button
                       variant="outline"
@@ -1142,7 +1136,7 @@ const ProductsAdmin = () => {
                       </div>
 
                       {/* Actions */}
-                      {canEdit() && (
+                      {canAccess('products') && (
                         <div className="flex gap-1 pt-2 border-t">
                           <Button variant="ghost" size="sm" className="flex-1" onClick={() => openEditDialog(product)}>
                             <Pencil className="w-3 h-3 mr-1" />

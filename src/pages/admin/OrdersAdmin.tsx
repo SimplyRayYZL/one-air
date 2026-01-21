@@ -81,7 +81,7 @@ const OrdersAdmin = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
     const [lastOrderCount, setLastOrderCount] = useState<number>(0);
-    const { canEdit, role } = useAdminAuth();
+    const { canAccess, role } = useAdminAuth();
 
     const { data: orders, isLoading, refetch } = useQuery({
         queryKey: ["admin-orders"],
@@ -229,12 +229,7 @@ const OrdersAdmin = () => {
                                 <RefreshCw className="w-4 h-4" />
                                 تحديث
                             </Button>
-                            {role === 'viewer' && (
-                                <Badge variant="secondary" className="h-9 px-3 flex items-center gap-1">
-                                    <Eye className="w-4 h-4" />
-                                    عرض فقط
-                                </Badge>
-                            )}
+
                         </div>
                     </div>
                 </div>
@@ -363,7 +358,7 @@ const OrdersAdmin = () => {
                                                 {order.total_amount.toLocaleString()} ج.م
                                             </TableCell>
                                             <TableCell>
-                                                {canEdit() && order.status !== "cancelled" ? (
+                                                {canAccess('orders') && order.status !== "cancelled" ? (
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
