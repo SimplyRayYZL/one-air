@@ -98,7 +98,7 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const logout = () => {
+    const logout = React.useCallback(() => {
         setIsAuthenticated(false);
         setRole(null);
         setUsername(null);
@@ -107,7 +107,7 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem('adminRole');
         localStorage.removeItem('adminUsername');
         localStorage.removeItem('adminPermissions');
-    };
+    }, []);
 
     // Permission helpers
     const isSuperAdmin = () => role === 'super_admin';
