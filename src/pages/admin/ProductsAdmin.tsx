@@ -997,6 +997,8 @@ const ProductsAdmin = () => {
                                 src={product.image_url}
                                 alt={product.name}
                                 className="w-full h-full object-contain"
+                                referrerPolicy="no-referrer"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
@@ -1100,6 +1102,8 @@ const ProductsAdmin = () => {
                           src={product.image_url}
                           alt={product.name}
                           className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
