@@ -14,25 +14,30 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
-const calculateHP = (area: number, height: number, floor: string, sun: string, type: string) => {
+const calculateHP = (area: number, location: string, floor: string, sun: string, type: string) => {
     // AC capacity calculation based on room area
     // 1.5HP: up to 15 sqm
-    // 2.25HP: 16-20 sqm
-    // 3HP: 21-30 sqm
+    // 2.25HP: 16-24 sqm
+    // 3HP: 25-30 sqm
     // 4HP: 31-40 sqm
     // 5HP: 41-50 sqm
 
     let hp = 1.5;
     if (area > 15) hp = 2.25;
-    if (area > 20) hp = 3;
+    if (area > 24) hp = 3;
     if (area > 30) hp = 4;
     if (area > 40) hp = 5;
 
-    // Adjust for ceiling height
-    if (height >= 3.5) hp = Math.min(5, hp + 0.5);
-    if (height >= 4.0) hp = Math.min(5, hp + 1);
+    // Increase capacity for southern direction or last floor (more heat)
+    if (location === 'south' || location === 'lastfloor') {
+        // Upgrade to next tier
+        if (hp === 1.5) hp = 2.25;
+        else if (hp === 2.25) hp = 3;
+        else if (hp === 3) hp = 4;
+        else if (hp === 4) hp = 5;
+    }
 
-    const btu = area * height * 300;
+    const btu = area * 2.8 * 300;
 
     return { hp, btu };
 };
@@ -50,7 +55,7 @@ const ACCalculatorSection = ({ title, subtitle }: { title?: string, subtitle?: s
 
     const [roomType, setRoomType] = useState<string>("");
     const [area, setArea] = useState<string>("");
-    const [height, setHeight] = useState<string>("2.8");
+    const [location, setLocation] = useState<string>("north");
     const [floor, setFloor] = useState<string>("middle"); // kept for logic, simpler UI
 
     const [result, setResult] = useState<{ hp: number, btu: number } | null>(null);
@@ -62,7 +67,7 @@ const ACCalculatorSection = ({ title, subtitle }: { title?: string, subtitle?: s
         }
 
         // Use default values for floor/sun if not exposed in refined UI
-        const res = calculateHP(Number(area), Number(height), floor, "average", roomType);
+        const res = calculateHP(Number(area), location, floor, "average", roomType);
         setResult(res);
     };
 
@@ -145,17 +150,17 @@ const ACCalculatorSection = ({ title, subtitle }: { title?: string, subtitle?: s
                                             </Select>
                                         </div>
 
-                                        {/* 3. Height (Optional/Advanced) */}
+                                        {/* 3. Location/Direction */}
                                         <div className="md:col-span-3 space-y-2">
-                                            <label className="text-white text-sm font-medium pr-1">ارتفاع السقف</label>
-                                            <Select value={height} onValueChange={setHeight}>
+                                            <label className="text-white text-sm font-medium pr-1">موقع الشقة</label>
+                                            <Select value={location} onValueChange={setLocation}>
                                                 <SelectTrigger className="h-12 bg-white/90 border-0 text-slate-900 focus:ring-2 focus:ring-primary/50 font-medium text-right">
-                                                    <SelectValue placeholder="الارتفاع" />
+                                                    <SelectValue placeholder="اختر الموقع" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="2.8" className="text-right">عادي (2.8م)</SelectItem>
-                                                    <SelectItem value="3.5" className="text-right">عالي (3.5م)</SelectItem>
-                                                    <SelectItem value="4.0" className="text-right">مرتفع جداً (4م+)</SelectItem>
+                                                    <SelectItem value="north" className="text-right">جهة بحري</SelectItem>
+                                                    <SelectItem value="south" className="text-right">جهة قبلي</SelectItem>
+                                                    <SelectItem value="lastfloor" className="text-right">دور أخير</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
