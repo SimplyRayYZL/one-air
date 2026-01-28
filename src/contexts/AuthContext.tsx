@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 // In production, return the origin
                 return origin;
             }
-            return 'https://oneaircool.com';
+            return 'https://www.oneaircool.com';
         };
 
         const { error } = await supabase.auth.signInWithOAuth({
