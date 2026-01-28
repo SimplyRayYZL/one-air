@@ -15,31 +15,36 @@ import {
 import { toast } from "sonner";
 
 const calculateHP = (area: number, location: string, floor: string, sun: string, type: string) => {
-    // AC capacity calculation based on room area
-    // 1.5HP: up to 15 sqm
-    // 2.25HP: 16-24 sqm
-    // 3HP: 25-30 sqm
-    // 4HP: 31-40 sqm
-    // 5HP: 41-50 sqm
-
     let hp = 1.5;
-    if (area > 15) hp = 2.25;
-    if (area > 24) hp = 3;
-    if (area > 30) hp = 4;
-    if (area > 40) hp = 5;
+    let units = 1;
 
-    // Increase capacity for southern direction or last floor (more heat)
     if (location === 'south' || location === 'lastfloor') {
-        // Upgrade to next tier
-        if (hp === 1.5) hp = 2.25;
-        else if (hp === 2.25) hp = 3;
-        else if (hp === 3) hp = 4;
-        else if (hp === 4) hp = 5;
+        // For southern direction or last floor (more heat exposure)
+        // 1.5HP: up to 10 sqm
+        // 2.25HP: 11-16 sqm
+        // 3HP: 17-20 sqm
+        // 4HP: 21-30 sqm
+        // 2x3HP: 31-50 sqm
+        if (area > 10) hp = 2.25;
+        if (area > 16) hp = 3;
+        if (area > 20) hp = 4;
+        if (area > 30) { hp = 3; units = 2; }
+    } else {
+        // For northern direction (less heat)
+        // 1.5HP: up to 15 sqm
+        // 2.25HP: 16-24 sqm
+        // 3HP: 25-30 sqm
+        // 4HP: 31-40 sqm
+        // 2x3HP: 41-50 sqm
+        if (area > 15) hp = 2.25;
+        if (area > 24) hp = 3;
+        if (area > 30) hp = 4;
+        if (area > 40) { hp = 3; units = 2; }
     }
 
     const btu = area * 2.8 * 300;
 
-    return { hp, btu };
+    return { hp, btu, units };
 };
 
 const ROOM_TYPES = [
@@ -58,7 +63,7 @@ const ACCalculatorSection = ({ title, subtitle }: { title?: string, subtitle?: s
     const [location, setLocation] = useState<string>("north");
     const [floor, setFloor] = useState<string>("middle"); // kept for logic, simpler UI
 
-    const [result, setResult] = useState<{ hp: number, btu: number } | null>(null);
+    const [result, setResult] = useState<{ hp: number, btu: number, units: number } | null>(null);
 
     const handleCalculate = () => {
         if (!roomType || !area) {
@@ -193,7 +198,9 @@ const ACCalculatorSection = ({ title, subtitle }: { title?: string, subtitle?: s
                                                         </div>
                                                         <div>
                                                             <p className="text-sm text-muted-foreground font-medium">القدرة المناسبة لك</p>
-                                                            <h3 className="text-2xl font-bold text-gray-900">{result.hp} حصان</h3>
+                                                            <h3 className="text-2xl font-bold text-gray-900">
+                                                                {result.units > 1 ? `${result.units} × ${result.hp} حصان` : `${result.hp} حصان`}
+                                                            </h3>
                                                         </div>
                                                     </div>
 
