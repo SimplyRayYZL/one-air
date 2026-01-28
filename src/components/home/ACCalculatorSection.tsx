@@ -24,22 +24,24 @@ const calculateHP = (area: number, location: string, floor: string, sun: string,
         // 2.25HP: 11-16 sqm
         // 3HP: 17-20 sqm
         // 4HP: 21-30 sqm
-        // 2x3HP: 31-50 sqm
+        // 5HP: 31-40 sqm
+        // 2x3HP: 41-50 sqm
         if (area > 10) hp = 2.25;
         if (area > 16) hp = 3;
         if (area > 20) hp = 4;
-        if (area > 30) { hp = 3; units = 2; }
+        if (area > 30) hp = 5;
+        if (area > 40) { hp = 3; units = 2; }
     } else {
         // For northern direction (less heat)
         // 1.5HP: up to 15 sqm
         // 2.25HP: 16-24 sqm
         // 3HP: 25-30 sqm
         // 4HP: 31-40 sqm
-        // 2x3HP: 41-50 sqm
+        // 5HP: 41-50 sqm
         if (area > 15) hp = 2.25;
         if (area > 24) hp = 3;
         if (area > 30) hp = 4;
-        if (area > 40) { hp = 3; units = 2; }
+        if (area > 40) hp = 5;
     }
 
     const btu = area * 2.8 * 300;
