@@ -90,10 +90,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const signInWithGoogle = async () => {
+        // Use the correct redirect URL based on environment
+        const getRedirectUrl = () => {
+            // In production, use the actual site URL
+            if (typeof window !== 'undefined') {
+                const origin = window.location.origin;
+                // If running locally, use the local URL
+                if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+                    return origin;
+                }
+                // In production, return the origin
+                return origin;
+            }
+            return 'https://oneaircool.com';
+        };
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: window.location.origin,
+                redirectTo: getRedirectUrl(),
             },
         });
         return { error };
