@@ -15,19 +15,24 @@ import {
 import { toast } from "sonner";
 
 const calculateHP = (area: number, height: number, floor: string, sun: string, type: string) => {
-    // Basic calculation logic simplified for UI demo, but keeping the core idea
-    // 1.5HP up to 12m2
-    // 2.25HP up to 18m2
-    // 3HP up to 24m2
-    // 4HP up to 36m2
-    // 5HP up to 48m2
-    // This is a rough estimation used in the previous code logic
-    const btu = area * height * 300;
+    // AC capacity calculation based on room area
+    // 1.5HP: up to 15 sqm
+    // 2.25HP: 16-20 sqm
+    // 3HP: 21-30 sqm
+    // 4HP: 31-40 sqm
+    // 5HP: 41-50 sqm
+
     let hp = 1.5;
-    if (btu > 12000) hp = 2.25;
-    if (btu > 18000) hp = 3;
-    if (btu > 24000) hp = 4;
-    if (btu > 36000) hp = 5;
+    if (area > 15) hp = 2.25;
+    if (area > 20) hp = 3;
+    if (area > 30) hp = 4;
+    if (area > 40) hp = 5;
+
+    // Adjust for ceiling height
+    if (height >= 3.5) hp = Math.min(5, hp + 0.5);
+    if (height >= 4.0) hp = Math.min(5, hp + 1);
+
+    const btu = area * height * 300;
 
     return { hp, btu };
 };
@@ -128,8 +133,8 @@ const ACCalculatorSection = ({ title, subtitle }: { title?: string, subtitle?: s
                                                     <SelectValue placeholder="اختر المساحة" />
                                                 </SelectTrigger>
                                                 <SelectContent className="max-h-[200px]">
-                                                    {[...Array(20)].map((_, i) => {
-                                                        const val = (i + 1) * 5; // 5, 10, 15...
+                                                    {[...Array(10)].map((_, i) => {
+                                                        const val = (i + 1) * 5; // 5, 10, 15... up to 50
                                                         return (
                                                             <SelectItem key={val} value={val.toString()} className="cursor-pointer text-right">
                                                                 {val} متر مربع
