@@ -134,7 +134,7 @@ const ProductsAdmin = () => {
       is_active: product.is_active,
       stock: product.stock?.toString() || "0",
       cooling_type: product.cooling_type || "",
-      is_inverter: (product as any).is_inverter || false,
+      is_inverter: product.is_inverter || false,
     });
     setPreviewUrl(product.image_url || "");
     setSelectedImage(null);
