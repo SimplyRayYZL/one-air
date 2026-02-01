@@ -47,6 +47,8 @@ import {
   ArrowLeft,
   LayoutList,
   LayoutGrid,
+  X,
+  Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -102,13 +104,46 @@ const ProductsAdmin = () => {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
+  const [selectedCapacity, setSelectedCapacity] = useState<string>("all");
+  const [showDuplicates, setShowDuplicates] = useState(false);
+
+  // Calculate duplicates once when products change
+  const duplicateIds = new Set<string>();
+  if (products) {
+    const nameMap = new Map<string, string[]>();
+    products.forEach(p => {
+      const normalizedName = p.name.trim().toLowerCase();
+      const existing = nameMap.get(normalizedName) || [];
+      existing.push(p.id);
+      nameMap.set(normalizedName, existing);
+    });
+
+    nameMap.forEach((ids) => {
+      if (ids.length > 1) {
+        ids.forEach(id => duplicateIds.add(id));
+      }
+    });
+  }
+
   const filteredProducts = products?.filter((product) => {
+    // 1. Search
     const matchesSearch = product.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
+
+    // 2. Brand Filter
     const matchesBrand =
       selectedBrand === "all" || product.brand_id === selectedBrand;
-    return matchesSearch && matchesBrand;
+
+    // 3. Capacity Filter
+    const matchesCapacity =
+      selectedCapacity === "all" ||
+      (product.capacity && product.capacity.includes(selectedCapacity));
+
+    // 4. Duplicate Filter
+    const matchesDuplicate = !showDuplicates || duplicateIds.has(product.id);
+
+    return matchesSearch && matchesBrand && matchesCapacity && matchesDuplicate;
   });
 
   const openAddDialog = () => {
@@ -780,6 +815,38 @@ const ProductsAdmin = () => {
                   ))}
                 </SelectContent>
               </Select>
+
+              <Select value={selectedCapacity} onValueChange={setSelectedCapacity}>
+                <SelectTrigger className="w-full md:w-32">
+                  <SelectValue placeholder="القدرة" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">كل القدرات</SelectItem>
+                  <SelectItem value="1.5">1.5 حصان</SelectItem>
+                  <SelectItem value="2.25">2.25 حصان</SelectItem>
+                  <SelectItem value="3">3 حصان</SelectItem>
+                  <SelectItem value="4">4 حصان</SelectItem>
+                  <SelectItem value="5">5 حصان</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant={showDuplicates ? "destructive" : "outline"}
+                onClick={() => setShowDuplicates(!showDuplicates)}
+                className="gap-2 whitespace-nowrap"
+              >
+                {showDuplicates ? (
+                  <>
+                    <X className="w-4 h-4" />
+                    إلغاء الفحص
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    فحص التكرار
+                  </>
+                )}
+              </Button>
             </div>
           </CardContent>
         </Card>
