@@ -160,6 +160,10 @@ const ProductsAdmin = () => {
         case "missing_type":
           matchesIssue = !product.type;
           break;
+        case "missing_inverter":
+          // Check if it's null or undefined (not false, because false is a valid state for 'Normal')
+          matchesIssue = product.is_inverter === null || product.is_inverter === undefined;
+          break;
       }
     }
 
@@ -862,6 +866,7 @@ const ProductsAdmin = () => {
                   <SelectItem value="missing_capacity">بدون قدرة ⚡</SelectItem>
                   <SelectItem value="missing_cooling">بدون نوع تبريد ❄️</SelectItem>
                   <SelectItem value="missing_type">بدون نوع (Classification) 🏷️</SelectItem>
+                  <SelectItem value="missing_inverter">بدون تحديد (انفرتر/عادي) ❓</SelectItem>
                 </SelectContent>
               </Select>
 
