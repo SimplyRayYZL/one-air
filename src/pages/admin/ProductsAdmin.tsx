@@ -105,6 +105,7 @@ const ProductsAdmin = () => {
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
   const [selectedCapacity, setSelectedCapacity] = useState<string>("all");
+  const [selectedIssue, setSelectedIssue] = useState<string>("all");
   const [showDuplicates, setShowDuplicates] = useState(false);
 
   // Calculate duplicates once when products change
@@ -138,12 +139,31 @@ const ProductsAdmin = () => {
     // 3. Capacity Filter
     const matchesCapacity =
       selectedCapacity === "all" ||
-      (product.capacity && product.capacity.includes(selectedCapacity));
+      (product.capacity && product.capacity.replace(/[^\d.]/g, '') === selectedCapacity);
 
     // 4. Duplicate Filter
     const matchesDuplicate = !showDuplicates || duplicateIds.has(product.id);
 
-    return matchesSearch && matchesBrand && matchesCapacity && matchesDuplicate;
+    // 5. Data Issues Filter
+    let matchesIssue = true;
+    if (selectedIssue !== "all") {
+      switch (selectedIssue) {
+        case "missing_desc":
+          matchesIssue = !product.description || product.description.trim() === "";
+          break;
+        case "missing_capacity":
+          matchesIssue = !product.capacity;
+          break;
+        case "missing_cooling":
+          matchesIssue = !product.cooling_type;
+          break;
+        case "missing_type":
+          matchesIssue = !product.type;
+          break;
+      }
+    }
+
+    return matchesSearch && matchesBrand && matchesCapacity && matchesDuplicate && matchesIssue;
   });
 
   const openAddDialog = () => {
@@ -827,6 +847,21 @@ const ProductsAdmin = () => {
                   <SelectItem value="3">3 حصان</SelectItem>
                   <SelectItem value="4">4 حصان</SelectItem>
                   <SelectItem value="5">5 حصان</SelectItem>
+                  <SelectItem value="6">6 حصان</SelectItem>
+                  <SelectItem value="7.5">7.5 حصان</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedIssue} onValueChange={setSelectedIssue}>
+                <SelectTrigger className="w-full md:w-40 bg-orange-50 dark:bg-orange-950/20 border-orange-200">
+                  <SelectValue placeholder="فحص البيانات" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">كل المنتجات</SelectItem>
+                  <SelectItem value="missing_desc">بدون وصف 📝</SelectItem>
+                  <SelectItem value="missing_capacity">بدون قدرة ⚡</SelectItem>
+                  <SelectItem value="missing_cooling">بدون نوع تبريد ❄️</SelectItem>
+                  <SelectItem value="missing_type">بدون نوع (Classification) 🏷️</SelectItem>
                 </SelectContent>
               </Select>
 
