@@ -115,18 +115,20 @@ const Products = () => {
       const typeMatch = selectedType === "الكل" || product.type === selectedType;
 
       const coolingMatch = selectedCooling === "الكل" ||
-        product.cooling_type === selectedCooling ||
-        (selectedCooling === "cold" && product.name.includes("بارد")) || // Legacy fallback
-        (selectedCooling === "hot_cold" && product.name.includes("ساخن"));
+        (product.cooling_type ? product.cooling_type === selectedCooling :
+          // Fallback logic if cooling_type is missing
+          (selectedCooling === "cold" ? (product.name.includes("بارد") && !product.name.includes("ساخن")) :
+            selectedCooling === "hot_cold" ? product.name.includes("ساخن") : true)
+        );
 
-      // Inverter filter logic - check if product name contains "انفرتر" or "Inverter"
+      // Inverter filter logic - prioritize DB field, fallback to name
       let inverterMatch = true;
       if (selectedInverter === "انفرتر") {
-        inverterMatch = product.name?.toLowerCase().includes("انفرتر") ||
-          product.name?.toLowerCase().includes("inverter");
+        inverterMatch = product.is_inverter === true ||
+          (product.name?.toLowerCase().includes("انفرتر") || product.name?.toLowerCase().includes("inverter"));
       } else if (selectedInverter === "عادي") {
-        inverterMatch = !product.name?.toLowerCase().includes("انفرتر") &&
-          !product.name?.toLowerCase().includes("inverter");
+        inverterMatch = product.is_inverter === false &&
+          (!product.name?.toLowerCase().includes("انفرتر") && !product.name?.toLowerCase().includes("inverter"));
       }
 
       return brandMatch && hpMatch && typeMatch && coolingMatch && inverterMatch;
