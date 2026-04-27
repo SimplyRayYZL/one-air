@@ -107,10 +107,10 @@ const Products = () => {
     return products.filter((product) => {
       const brandMatch = selectedBrand === "الكل" || product.brand === selectedBrand;
 
-      // HP Match: Check new 'horsepower' column OR fallback to capacity string match
+      // HP Match: Strict numeric match to prevent "1.5" matching "21.5" etc.
       const hpMatch = selectedHp === "الكل" ||
         (product.horsepower === selectedHp) ||
-        (product.capacity && product.capacity.includes(selectedHp));
+        (product.capacity && product.capacity.replace(/[^\d.]/g, '') === selectedHp);
 
       const typeMatch = selectedType === "الكل" || product.type === selectedType;
 
